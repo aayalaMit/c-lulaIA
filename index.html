@@ -119,6 +119,44 @@ select:focus{outline:none;border-color:var(--cyan)}
 
 /* CARD */
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px 18px}
+
+/* BASELINE SYSTEM */
+.base-bar{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:8px 14px;margin-bottom:14px}
+.base-btn{padding:6px 14px;border-radius:var(--r);border:1px solid rgba(245,166,35,.5);background:rgba(245,166,35,.1);color:var(--gold);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--sans);transition:all .2s;white-space:nowrap}
+.base-btn:hover{background:rgba(245,166,35,.2)}
+.base-btn.active{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.base-reset{padding:6px 12px;border-radius:var(--r);border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;font-family:var(--sans);transition:all .2s}
+.base-reset:hover{color:var(--text);border-color:var(--border2)}
+.base-status{font-size:11px;color:var(--muted);flex:1}
+.base-status span{color:var(--gold);font-weight:500}
+
+/* Slider with baseline marker */
+.sl-wrap{position:relative;margin-bottom:4px}
+.sl-wrap input[type=range]{width:100%}
+.base-marker{position:absolute;top:50%;transform:translateY(-50%);width:3px;height:14px;background:var(--gold);border-radius:2px;pointer-events:none;opacity:0;transition:opacity .2s;margin-top:-1px}
+.base-marker.visible{opacity:1}
+
+/* Delta badge next to slider value */
+.delta{font-family:var(--mono);font-size:10px;font-weight:500;padding:1px 6px;border-radius:4px;display:none}
+.delta.show{display:inline-block}
+.delta.up{background:rgba(34,197,94,.15);color:var(--green)}
+.delta.dn{background:rgba(206,26,33,.15);color:#FF6B6B}
+.delta.eq{background:rgba(100,116,139,.15);color:var(--muted)}
+
+/* Initiative card — baseline highlight */
+.init-card.base-changed{border-color:rgba(245,166,35,.5);background:color-mix(in srgb,var(--gold) 3%,var(--bg2))}
+.init-card.base-changed .init-header{background:color-mix(in srgb,var(--gold) 4%,var(--bg2))}
+.base-diff-row{display:flex;align-items:center;gap:6px;padding:5px 10px;background:rgba(245,166,35,.08);border-radius:6px;margin-bottom:8px;font-size:11px}
+.base-diff-row .bd-l{color:var(--muted)}
+.base-diff-row .bd-v{font-family:var(--mono);font-weight:500}
+.base-diff-row .bd-v.pos{color:var(--red)}
+.base-diff-row .bd-v.neg{color:var(--green)}
+.base-diff-row .bd-v.neu{color:var(--muted)}
+
+/* Cost delta in header */
+.cost-delta{font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:4px;margin-left:4px}
+.cost-delta.pos{background:rgba(206,26,33,.15);color:#FF8080}
+.cost-delta.neg{background:rgba(34,197,94,.15);color:var(--green)}
 </style>
 </head>
 <body>
@@ -223,6 +261,12 @@ select:focus{outline:none;border-color:var(--cyan)}
   <div class="wtag">
     <div class="wdot"></div>
     <div><div class="wt">STT (transcripción): Whisper open-source — costo = $0</div><div class="ws">200.000 llamadas/mes procesadas localmente. Solo GPU cloud (~30 MM Gs/año)</div></div>
+  </div>
+
+  <div class="base-bar">
+    <button class="base-btn" id="base-btn" onclick="toggleBase()">📌 Fijar como caso base</button>
+    <button class="base-reset" id="base-reset-btn" onclick="resetToBase()" style="display:none">↩ Volver al base</button>
+    <div class="base-status" id="base-status">Ajustá los sliders y fijá el estado actual como caso base para comparar sensibilizaciones.</div>
   </div>
 
   <div id="init-list"></div>
@@ -525,18 +569,19 @@ function buildInitList() {
       </div>`;
     }
 
-    return `<div class="init-card">
+    return `<div class="init-card" id="card-${ini.id}">
       <div class="init-header" onclick="toggleInit('${ini.id}')">
         <div>
           <div class="init-name">${ini.name}</div>
           <div class="init-desc">${ini.note}</div>
         </div>
         <span class="ola-b ${olaCls}">${olaLbl}</span>
-        <div class="init-usd" id="h-usd-${ini.id}">—</div>
+        <div class="init-usd" id="h-usd-${ini.id}">—<span class="cost-delta" id="hd-${ini.id}"></span></div>
         <div class="init-gs"  id="h-gs-${ini.id}">—</div>
         <div class="expand-btn" id="exp-${ini.id}">▸</div>
       </div>
       <div class="init-body" id="body-${ini.id}">
+        <div class="base-diff-row" id="bdiff-${ini.id}" style="display:none"></div>
         ${sliders}
         <div class="cost-pills" id="pills-${ini.id}"></div>
       </div>
@@ -561,6 +606,42 @@ function renderInitCosts() {
 
     set(`h-usd-${ini.id}`, fmtU(usd));
     set(`h-gs-${ini.id}`,  gs(usd)+' Gs');
+
+    // Baseline diff row inside body
+    const diffEl = document.getElementById(`bdiff-${ini.id}`);
+    if (diffEl && BASE) {
+      const baseUsd = BASE.costs[idx];
+      const diff    = usd - baseUsd;
+      const diffGs  = Math.round(diff * G.fx / 1e6);
+      const pct     = baseUsd > 0 ? (diff/baseUsd*100).toFixed(1) : '0';
+      const cls     = Math.abs(diff)<0.5 ? 'neu' : diff>0 ? 'pos' : 'neg';
+      const sign    = diff>0?'+':'';
+      diffEl.style.display = Math.abs(diff)>0.5 ? 'flex' : 'none';
+      diffEl.innerHTML = `
+        <span class="bd-l">vs. caso base:</span>
+        <span class="bd-v ${cls}">${sign}${fmtU(diff)} / ${sign}${diffGs} MM Gs/año</span>
+        <span class="bd-l">(${sign}${pct}%)</span>`;
+    } else if (diffEl) {
+      diffEl.style.display = 'none';
+    }
+    const card = document.getElementById(`card-${ini.id}`);
+    const deltaEl = document.getElementById(`hd-${ini.id}`);
+    if (BASE && card && deltaEl) {
+      const baseUsd = BASE.costs[idx];
+      const diff = usd - baseUsd;
+      const pctDiff = baseUsd > 0 ? Math.round(diff/baseUsd*100) : 0;
+      if (Math.abs(pctDiff) >= 1) {
+        card.classList.add('base-changed');
+        deltaEl.className = `cost-delta ${diff>0?'pos':'neg'}`;
+        deltaEl.textContent = `${diff>0?'+':''}${pctDiff}%`;
+      } else {
+        card.classList.remove('base-changed');
+        deltaEl.className = 'cost-delta';
+        deltaEl.textContent = '';
+      }
+    } else if (card) {
+      card.classList.remove('base-changed');
+    }
 
     // Update labels for sliders
     if (ini.special!=='audit') {
@@ -753,6 +834,155 @@ function renderSummary() {
   set('s-roi-t',   '+'+fmt(roi)+' MM');
 }
 
+// ── BASELINE SYSTEM ────────────────────────────────────────────────────────
+let BASE = null; // null = no base set
+
+function snapBase() {
+  // Snapshot all current per-initiative values + audit params + global model/adopt
+  BASE = {
+    model: G.model, adopt: G.adopt, fx: G.fx,
+    audCalls: G.audCalls, audPct: G.audPct, audDur: G.audDur,
+    audLlm: G.audLlm, audStt: G.audStt,
+    ini: INI.map(i => ({ id:i.id, users:i.users, q:i.q, tok:i.tok })),
+    costs: INI.map(i => calcIni(i)),
+    totalApi: INI.reduce((s,i)=>s+calcIni(i),0),
+    auditTotal: calcAudit().totalUsd,
+  };
+}
+
+function toggleBase() {
+  const btn = document.getElementById('base-btn');
+  if (BASE) {
+    // Already set → unset
+    BASE = null;
+    btn.classList.remove('active');
+    btn.textContent = '📌 Fijar como caso base';
+    document.getElementById('base-reset-btn').style.display = 'none';
+    document.getElementById('base-status').innerHTML = 'Ajustá los sliders y fijá el estado actual como caso base para comparar sensibilizaciones.';
+    updateBaseMarkers();
+    renderInitCosts();
+  } else {
+    snapBase();
+    btn.classList.add('active');
+    btn.textContent = '✓ Caso base fijado';
+    document.getElementById('base-reset-btn').style.display = '';
+    const total = fmt(Math.round(BASE.totalApi * G.fx / 1e6));
+    document.getElementById('base-status').innerHTML =
+      `Caso base guardado · Total APIs: <span>${total} MM Gs/año</span> · Ahora sensibilizá cualquier variable para ver la diferencia.`;
+    updateBaseMarkers();
+    renderInitCosts();
+  }
+}
+
+function resetToBase() {
+  if (!BASE) return;
+  // Restore all slider values from base
+  const setSlider = (id, val) => { const el=document.getElementById(id); if(el) el.value=val; };
+  setSlider('g-model-sel', BASE.model); // model is a select
+  const mEl = document.getElementById('g-model'); if(mEl) mEl.value = BASE.model;
+  setSlider('g-adopt', Math.round(BASE.adopt*100));
+  setSlider('a-calls', BASE.audCalls);
+  setSlider('a-pct',   Math.round(BASE.audPct*100));
+  setSlider('a-dur',   BASE.audDur);
+  const aLlm = document.getElementById('a-llm'); if(aLlm) aLlm.value = BASE.audLlm;
+  const aStt = document.getElementById('a-stt'); if(aStt) aStt.value = BASE.audStt;
+  BASE.ini.forEach(b => {
+    setSlider(`sl-u-${b.id}`, b.users);
+    setSlider(`sl-q-${b.id}`, b.q);
+    setSlider(`sl-t-${b.id}`, b.tok);
+  });
+  ua();
+}
+
+function updateBaseMarkers() {
+  if (!BASE) {
+    // Hide all markers and deltas
+    document.querySelectorAll('.base-marker').forEach(m => m.classList.remove('visible'));
+    document.querySelectorAll('.delta').forEach(d => d.classList.remove('show'));
+    return;
+  }
+
+  // Per-initiative sliders
+  BASE.ini.forEach((b, idx) => {
+    const ini = INI.find(i=>i.id===b.id);
+    if (!ini) return;
+
+    const updateSliderMarker = (slId, baseVal, currentVal, maxVal) => {
+      const marker = document.getElementById(`mk-${slId}`);
+      const delta  = document.getElementById(`dl-${slId}`);
+      if (!marker || !delta) return;
+
+      const pct = baseVal / maxVal * 100;
+      marker.style.left = `calc(${pct}% - 1px)`;
+      marker.classList.add('visible');
+
+      const diff = currentVal - baseVal;
+      const pctDiff = baseVal !== 0 ? Math.round(diff/baseVal*100) : 0;
+      if (Math.abs(diff) < 0.01) {
+        delta.className = 'delta eq show';
+        delta.textContent = '= base';
+      } else {
+        delta.className = `delta ${diff>0?'up':'dn'} show`;
+        delta.textContent = `${diff>0?'+':''}${pctDiff}% vs base`;
+      }
+    };
+
+    updateSliderMarker(`sl-u-${b.id}`, b.users, ini.users, +document.getElementById(`sl-u-${b.id}`)?.max || 3000);
+    updateSliderMarker(`sl-q-${b.id}`, b.q,     ini.q,     +document.getElementById(`sl-q-${b.id}`)?.max || 100);
+    updateSliderMarker(`sl-t-${b.id}`, b.tok,   ini.tok,   8000);
+  });
+
+  // Audit sliders
+  const audSliders = [
+    ['a-calls', BASE.audCalls, G.audCalls, 500000],
+    ['a-pct',   Math.round(BASE.audPct*100), Math.round(G.audPct*100), 100],
+    ['a-dur',   BASE.audDur, G.audDur, 15],
+  ];
+  audSliders.forEach(([id, baseVal, curVal, max]) => {
+    const marker = document.getElementById(`mk-${id}`);
+    const delta  = document.getElementById(`dl-${id}`);
+    if (!marker || !delta) return;
+    marker.style.left = `calc(${baseVal/max*100}% - 1px)`;
+    marker.classList.add('visible');
+    const diff = curVal - baseVal;
+    const pctDiff = baseVal !== 0 ? Math.round(diff/baseVal*100) : 0;
+    if (Math.abs(diff) < 0.01) {
+      delta.className = 'delta eq show'; delta.textContent = '= base';
+    } else {
+      delta.className = `delta ${diff>0?'up':'dn'} show`;
+      delta.textContent = `${diff>0?'+':''}${pctDiff}% vs base`;
+    }
+  });
+}
+
+// Wrap each slider in a .sl-wrap with marker and delta — injected once after buildInitList
+function injectBaseMarkers() {
+  const wrapSlider = (id, extraDelta) => {
+    const el = document.getElementById(id);
+    if (!el || el.parentElement?.classList.contains('sl-wrap')) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'sl-wrap';
+    el.parentNode.insertBefore(wrap, el);
+    wrap.appendChild(el);
+    const marker = document.createElement('div');
+    marker.className = 'base-marker'; marker.id = `mk-${id}`;
+    wrap.appendChild(marker);
+    // Delta span — inject next to the .cv span if it exists
+    const cvEl = document.querySelector(`[id="lbl-${id.replace('sl-','').replace(/-\w+$/,'')}"]`) ||
+                 document.querySelector(`#${id}`)?.closest('.ci')?.querySelector('.cv');
+    const dEl = document.createElement('span');
+    dEl.className = 'delta'; dEl.id = `dl-${id}`;
+    if (cvEl) cvEl.parentNode.insertBefore(dEl, cvEl.nextSibling);
+    else el.closest('.ci')?.querySelector('.cl')?.appendChild(dEl);
+  };
+
+  INI.forEach(ini => {
+    if (ini.special === 'audit') return;
+    ['u','q','t'].forEach(k => wrapSlider(`sl-${k}-${ini.id}`));
+  });
+  ['a-calls','a-pct','a-dur'].forEach(id => wrapSlider(id));
+}
+
 // ── MAIN UPDATE ───────────────────────────────────────────────────────────
 function ua() {
   syncSliders();
@@ -761,6 +991,7 @@ function ua() {
   renderEquipo();
   renderRoi();
   renderSummary();
+  if (BASE) updateBaseMarkers();
 }
 
 function showTab(name) {
@@ -789,6 +1020,7 @@ function setSc(sc, btn) {
 // Build and init
 buildInitList();
 ua();
+injectBaseMarkers();
 </script>
 </body>
 </html>
