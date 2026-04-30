@@ -130,7 +130,6 @@ select:focus{outline:none;border-color:var(--cyan)}
   </div>
   <div class="tab active" onclick="showTab('resumen')">📊 Resumen</div>
   <div class="tab" onclick="showTab('iniciativas')">🤖 Iniciativas</div>
-  <div class="tab" onclick="showTab('auditoria')">📞 Auditoría Llamadas</div>
   <div class="tab" onclick="showTab('equipo')">👥 Equipo</div>
   <div class="tab" onclick="showTab('roi')">💰 ROI Escenarios</div>
 </nav>
@@ -233,48 +232,6 @@ select:focus{outline:none;border-color:var(--cyan)}
     <div></div>
     <div style="text-align:right"><div style="font-size:10px;color:var(--muted)">USD/año</div><div style="font-family:var(--mono);font-size:18px;color:var(--gold)" id="api-tot-usd">—</div></div>
     <div style="text-align:right"><div style="font-size:10px;color:var(--muted)">MM Gs/año</div><div style="font-family:var(--mono);font-size:18px;color:var(--cyan)" id="api-tot-gs">—</div></div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════
-     AUDITORÍA LLAMADAS
-══════════════════════════════════════════════════════ -->
-<div class="page" id="page-auditoria">
-  <div class="sh">Parámetros de auditoría de llamadas</div>
-  <div class="ctrl-row">
-    <div class="ci"><div class="cl">Llamadas/mes total <span class="cv" id="a-calls-v">200.000</span></div><input type="range" min="10000" max="500000" step="5000" value="200000" id="a-calls" oninput="ua()"></div>
-    <div class="ci"><div class="cl">% a auditar <span class="cv" id="a-pct-v">30%</span></div><input type="range" min="5" max="100" step="5" value="30" id="a-pct" oninput="ua()"></div>
-    <div class="ci"><div class="cl">Duración promedio <span class="cv" id="a-dur-v">4 min</span></div><input type="range" min="1" max="15" step="1" value="4" id="a-dur" oninput="ua()"></div>
-    <div class="ci"><div class="cl">Modelo análisis</div><select id="a-llm" onchange="ua()">
-      <option value="mini">GPT-4o mini ($0.15/$0.60)</option>
-      <option value="gpt4o">GPT-4o ($2.50/$10.00)</option>
-      <option value="claude">Claude Sonnet ($3.00/$15.00)</option>
-    </select></div>
-    <div class="ci"><div class="cl">STT</div><select id="a-stt" onchange="ua()">
-      <option value="0">Whisper OSS — $0 ✓ recomendado</option>
-      <option value="0.006">Whisper API — $0.006/min</option>
-      <option value="0.002">Deepgram — $0.002/min</option>
-    </select></div>
-  </div>
-
-  <div class="wtag" id="a-stt-box">
-    <div class="wdot"></div>
-    <div><div class="wt" id="a-stt-t">Whisper open-source — sin costo de transcripción</div><div class="ws" id="a-stt-s">GPU cloud necesaria: ~$200–400 USD/mes</div></div>
-  </div>
-
-  <div class="metrics">
-    <div class="m"><div class="m-l">Auditadas/año</div><div class="m-v" id="a-m1">720.000</div><div class="m-s" id="a-m1s">60.000/mes</div></div>
-    <div class="m"><div class="m-l">Minutos/año</div><div class="m-v" id="a-m2">2.880.000</div><div class="m-s">procesados</div></div>
-    <div class="m"><div class="m-l">Costo STT/año</div><div class="m-v zero" id="a-m3">$0</div><div class="m-s">Whisper OSS</div></div>
-    <div class="m"><div class="m-l">Costo LLM/año</div><div class="m-v" id="a-m4">$292</div><div class="m-s">análisis</div></div>
-    <div class="m ar"><div class="m-l">Total API/año</div><div class="m-v" id="a-m5">$17.572</div><div class="m-s" id="a-m5s">137 MM Gs</div></div>
-    <div class="m"><div class="m-l">Costo/llamada</div><div class="m-v" id="a-m6">$0.024</div><div class="m-s">USD</div></div>
-  </div>
-
-  <div class="card" style="margin-top:4px">
-    <div class="sh" style="margin-bottom:14px">Desglose de costo</div>
-    <table class="rt"><thead><tr><th>Componente</th><th>Supuesto</th><th>USD/año</th><th>MM Gs/año</th></tr></thead>
-    <tbody id="a-tbody"></tbody></table>
   </div>
 </div>
 
@@ -498,10 +455,51 @@ function buildInitList() {
 
     let sliders = '';
     if (isAudit) {
-      sliders = `<div style="font-size:12px;color:var(--muted);padding:4px 0">
-        Costo calculado dinámicamente en el tab <strong style="color:var(--cyan)">Auditoría Llamadas</strong>.
-        Cambiá los parámetros allí y el total se refleja aquí automáticamente.
-      </div>`;
+      sliders = `
+        <div class="init-sliders" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+          <div class="ci">
+            <div class="cl">Llamadas/mes total <span class="cv" id="a-calls-v">200.000</span></div>
+            <input type="range" min="10000" max="500000" step="5000" value="200000" id="a-calls" oninput="ua()">
+          </div>
+          <div class="ci">
+            <div class="cl">% a auditar <span class="cv" id="a-pct-v">30%</span></div>
+            <input type="range" min="5" max="100" step="5" value="30" id="a-pct" oninput="ua()">
+          </div>
+          <div class="ci">
+            <div class="cl">Duración promedio <span class="cv" id="a-dur-v">4 min</span></div>
+            <input type="range" min="1" max="15" step="1" value="4" id="a-dur" oninput="ua()">
+          </div>
+          <div class="ci">
+            <div class="cl">Modelo análisis IA</div>
+            <select id="a-llm" onchange="ua()">
+              <option value="mini">GPT-4o mini ($0.15/$0.60)</option>
+              <option value="gpt4o">GPT-4o ($2.50/$10.00)</option>
+              <option value="claude">Claude Sonnet ($3.00/$15.00)</option>
+            </select>
+          </div>
+          <div class="ci">
+            <div class="cl">Modelo STT</div>
+            <select id="a-stt" onchange="ua()">
+              <option value="0">Whisper OSS — $0 ✓</option>
+              <option value="0.006">Whisper API — $0.006/min</option>
+              <option value="0.002">Deepgram — $0.002/min</option>
+            </select>
+          </div>
+        </div>
+        <div class="wtag" style="margin-bottom:12px">
+          <div class="wdot"></div>
+          <div><div class="wt" id="a-stt-t">Whisper open-source — sin costo de transcripción</div><div class="ws" id="a-stt-s">GPU cloud: ~$200–400 USD/mes ya incluida en infraestructura</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:12px">
+          <div class="pill" style="flex-direction:column;align-items:flex-start;gap:2px"><span class="pill-l">Auditadas/año</span><span class="pill-v" id="a-m1">720.000</span></div>
+          <div class="pill" style="flex-direction:column;align-items:flex-start;gap:2px"><span class="pill-l">Minutos/año</span><span class="pill-v" id="a-m2">2.880.000</span></div>
+          <div class="pill" style="flex-direction:column;align-items:flex-start;gap:2px"><span class="pill-l">Costo STT</span><span class="pill-v zero" id="a-m3">$0</span></div>
+          <div class="pill" style="flex-direction:column;align-items:flex-start;gap:2px"><span class="pill-l">Costo LLM</span><span class="pill-v" id="a-m4">$292</span></div>
+          <div class="pill" style="flex-direction:column;align-items:flex-start;gap:2px"><span class="pill-l">Costo/llamada</span><span class="pill-v" id="a-m6">$0.024</span></div>
+          <div class="pill" style="flex-direction:column;align-items:flex-start;gap:2px"><span class="pill-l">Gs/mes</span><span class="pill-v" id="a-m5s">11 MM</span></div>
+        </div>
+        <table class="rt" style="font-size:12px"><thead><tr><th>Componente</th><th>Supuesto</th><th>USD/año</th><th>MM Gs/año</th></tr></thead>
+        <tbody id="a-tbody"></tbody></table>`;
     } else {
       const uLbl = isPdv ? 'Fotos/día' : isRef ? 'Agentes activos' : 'Usuarios totales';
       const qLbl = isPdv ? 'Análisis/foto' : 'Consultas/día';
@@ -606,7 +604,7 @@ function renderAudit() {
   set('a-m3',  G.audStt===0 ? '$0' : fmtU(a.sttUsd));
   set('a-m4',  fmtU(a.llmUsd));
   set('a-m5',  fmtU(a.totalUsd));
-  set('a-m5s', gs(a.totalUsd)+' Gs/año');
+  set('a-m5s', fmt(Math.round(a.totalUsd*G.fx/12/1e6))+' MM/mes');
   set('a-m6',  '$'+a.perCall.toFixed(4));
 
   const sttNames={0:'Whisper open-source — sin costo de transcripción','0.006':'Whisper API — $0.006/min','0.002':'Deepgram — $0.002/min'};
@@ -766,7 +764,7 @@ function ua() {
 }
 
 function showTab(name) {
-  const names=['resumen','iniciativas','auditoria','equipo','roi'];
+  const names=['resumen','iniciativas','equipo','roi'];
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===`page-${name}`));
 }
