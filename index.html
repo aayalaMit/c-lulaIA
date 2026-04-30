@@ -4,832 +4,793 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Célula IA · Dashboard ROI — Inverfin</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:        #0B0F1A;
-  --bg2:       #111827;
-  --bg3:       #1E2A3A;
-  --border:    #243044;
-  --red:       #CE1A21;
-  --red-dim:   rgba(206,26,33,0.15);
-  --blue:      #1B4A8A;
-  --blue-dim:  rgba(27,74,138,0.15);
-  --cyan:      #00AEEF;
-  --cyan-dim:  rgba(0,174,239,0.12);
-  --gold:      #F5A623;
-  --gold-dim:  rgba(245,166,35,0.12);
-  --green:     #22C55E;
-  --green-dim: rgba(34,197,94,0.12);
-  --white:     #F0F4FF;
-  --muted:     #64748B;
-  --text:      #CBD5E1;
-  --mono:      'DM Mono', monospace;
-  --sans:      'DM Sans', sans-serif;
-  --radius:    8px;
-  --radius-lg: 12px;
+:root{
+  --bg:#0B0F1A;--bg2:#111827;--bg3:#1E2A3A;--bg4:#263348;
+  --border:#243044;--border2:#2E3F58;
+  --red:#CE1A21;--blue:#1B4A8A;--cyan:#00AEEF;--gold:#F5A623;--green:#22C55E;
+  --white:#F0F4FF;--muted:#64748B;--text:#CBD5E1;
+  --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
+  --r:8px;--rl:12px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;min-height:100vh}
 
-/* ── NAV TABS ── */
-.nav { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--bg2); padding: 0 24px; position: sticky; top: 0; z-index: 100; }
-.nav-logo { display: flex; align-items: center; gap: 10px; padding: 14px 20px 14px 0; border-right: 1px solid var(--border); margin-right: 8px; }
-.nav-logo-dot { width: 28px; height: 28px; background: var(--red); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; color: #fff; font-weight: 500; letter-spacing: -0.5px; }
-.nav-logo-text { font-size: 13px; font-weight: 600; color: var(--white); letter-spacing: -0.3px; }
-.nav-logo-sub { font-size: 10px; color: var(--muted); }
-.tab { padding: 14px 18px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; white-space: nowrap; user-select: none; }
-.tab:hover { color: var(--text); }
-.tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+/* NAV */
+.nav{display:flex;align-items:stretch;border-bottom:1px solid var(--border);background:var(--bg2);padding:0 20px;position:sticky;top:0;z-index:100;overflow-x:auto}
+.logo{display:flex;align-items:center;gap:10px;padding:0 16px 0 0;border-right:1px solid var(--border);margin-right:6px;flex-shrink:0}
+.logo-sq{width:28px;height:28px;background:var(--red);border-radius:6px;display:grid;place-items:center;font-family:var(--mono);font-size:10px;color:#fff;font-weight:500}
+.logo-t{font-size:13px;font-weight:600;color:var(--white)}
+.logo-s{font-size:10px;color:var(--muted)}
+.tab{padding:14px 15px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;user-select:none}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
 
-/* ── LAYOUT ── */
-.page { display: none; padding: 24px; max-width: 1400px; margin: 0 auto; }
-.page.active { display: block; }
+/* PAGES */
+.page{display:none;padding:20px;max-width:1500px;margin:0 auto}
+.page.active{display:block}
 
-/* ── SECTION HEADERS ── */
-.section-title { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-.section-title::after { content:''; flex:1; height:1px; background: var(--border); }
+/* SECTION */
+.sh{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sh::after{content:'';flex:1;height:1px;background:var(--border)}
 
-/* ── CARDS ── */
-.card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; }
-.card-sm { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; }
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin-bottom:18px}
+.m{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:12px 14px}
+.m-l{font-size:11px;color:var(--muted);margin-bottom:3px}
+.m-v{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--white);line-height:1.1}
+.m-s{font-size:11px;color:var(--muted);margin-top:2px}
+.m.ar{border-color:var(--red);background:color-mix(in srgb,var(--red) 7%,var(--bg2))}.m.ar .m-v{color:#FF6B6B}
+.m.ag{border-color:var(--green);background:color-mix(in srgb,var(--green) 7%,var(--bg2))}.m.ag .m-v{color:var(--green)}
+.m.ao{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 7%,var(--bg2))}.m.ao .m-v{color:var(--gold)}
+.m.ac{border-color:var(--cyan);background:color-mix(in srgb,var(--cyan) 7%,var(--bg2))}.m.ac .m-v{color:var(--cyan)}
 
-/* ── METRIC CARDS ── */
-.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 10px; margin-bottom: 20px; }
-.metric { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; }
-.metric-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-.metric-val { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--white); line-height: 1.1; }
-.metric-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
-.metric.accent-red   { border-color: var(--red);  background: color-mix(in srgb, var(--red) 8%, var(--bg2)); }
-.metric.accent-green { border-color: var(--green);background: color-mix(in srgb, var(--green) 8%, var(--bg2)); }
-.metric.accent-gold  { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 8%, var(--bg2)); }
-.metric.accent-cyan  { border-color: var(--cyan); background: color-mix(in srgb, var(--cyan) 8%, var(--bg2)); }
-.metric.accent-red   .metric-val { color: #FF6B6B; }
-.metric.accent-green .metric-val { color: var(--green); }
-.metric.accent-gold  .metric-val { color: var(--gold); }
-.metric.accent-cyan  .metric-val { color: var(--cyan); }
+/* CONTROLS */
+.ctrl-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:16px}
+.ci{display:flex;flex-direction:column;gap:5px}
+.cl{font-size:11px;color:var(--muted);display:flex;justify-content:space-between}
+.cv{font-family:var(--mono);font-size:11px;color:var(--cyan);font-weight:500}
+input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;height:4px}
+select{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:var(--sans);font-size:12px;padding:7px 10px;width:100%;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='%2364748B'%3E%3Cpath d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+select:focus{outline:none;border-color:var(--cyan)}
 
-/* ── CONTROLS ── */
-.ctrl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 12px; margin-bottom: 20px; }
-.ctrl-item { display: flex; flex-direction: column; gap: 6px; }
-.ctrl-label { font-size: 11px; color: var(--muted); display: flex; justify-content: space-between; }
-.ctrl-val { font-family: var(--mono); font-size: 12px; color: var(--cyan); font-weight: 500; }
-select { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); color: var(--white); font-family: var(--sans); font-size: 13px; padding: 8px 10px; width: 100%; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='%2364748B'%3E%3Cpath d='M0 0l5 6 5-6z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
-select:focus { outline: none; border-color: var(--cyan); }
-input[type=range] { width: 100%; accent-color: var(--cyan); cursor: pointer; }
+/* INITIATIVE CARD */
+.init-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);margin-bottom:10px;overflow:hidden;transition:border-color .2s}
+.init-card:hover{border-color:var(--border2)}
+.init-header{display:grid;grid-template-columns:1fr auto auto auto auto;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;user-select:none}
+.init-header:hover{background:var(--bg3)}
+.init-name{font-size:13px;font-weight:500;color:var(--white)}
+.init-desc{font-size:11px;color:var(--muted);margin-top:2px}
+.ola-b{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:4px;white-space:nowrap}
+.ola1{background:rgba(206,26,33,.15);color:#FF8080;border:1px solid rgba(206,26,33,.3)}
+.ola2{background:rgba(27,74,138,.2);color:var(--cyan);border:1px solid rgba(27,74,138,.4)}
+.init-usd{font-family:var(--mono);font-size:14px;color:var(--white);text-align:right;min-width:80px}
+.init-gs{font-family:var(--mono);font-size:14px;color:var(--cyan);text-align:right;min-width:70px}
+.expand-btn{width:20px;height:20px;display:grid;place-items:center;color:var(--muted);font-size:14px;transition:transform .2s}
+.init-body{display:none;padding:14px 16px;border-top:1px solid var(--border);background:var(--bg3)}
+.init-body.open{display:block}
+.init-sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:12px}
+.bar-mini{height:4px;background:var(--border);border-radius:2px;margin-top:8px;overflow:hidden}
+.bar-mini-fill{height:100%;border-radius:2px;transition:width .3s}
+.cost-pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:var(--bg4);border:1px solid var(--border2);border-radius:6px;padding:5px 12px;font-size:12px;display:flex;gap:6px;align-items:center}
+.pill-l{color:var(--muted)}
+.pill-v{font-family:var(--mono);font-weight:500;color:var(--white)}
 
-/* ── INITIATIVE ROWS ── */
-.init-row { display: grid; grid-template-columns: 1fr 80px 90px 90px; align-items: center; gap: 12px; padding: 10px 14px; border-radius: var(--radius); margin-bottom: 4px; border: 1px solid transparent; transition: border-color .2s; }
-.init-row:hover { border-color: var(--border); background: var(--bg3); }
-.init-row-header { display: grid; grid-template-columns: 1fr 80px 90px 90px; gap: 12px; padding: 6px 14px; margin-bottom: 4px; }
-.init-row-header span { font-size: 10px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
-.init-name { font-size: 13px; font-weight: 500; color: var(--white); display: flex; align-items: center; gap: 8px; }
-.init-note { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; font-weight: 400; }
-.ola-badge { font-family: var(--mono); font-size: 9px; padding: 2px 7px; border-radius: 4px; flex-shrink: 0; }
-.ola1 { background: var(--red-dim); color: #FF6B6B; border: 1px solid rgba(206,26,33,.3); }
-.ola2 { background: var(--blue-dim); color: var(--cyan); border: 1px solid rgba(27,74,138,.4); }
-.init-usd { font-family: var(--mono); font-size: 13px; color: var(--white); text-align: right; }
-.init-gs  { font-family: var(--mono); font-size: 13px; color: var(--cyan); text-align: right; }
-.bar-wrap { grid-column: 1/-1; height: 3px; background: var(--border); border-radius: 2px; margin-top: -6px; margin-bottom: 4px; }
-.bar-fill { height: 100%; border-radius: 2px; transition: width .4s; }
+/* TOTAL */
+.total-bar{background:color-mix(in srgb,var(--gold) 8%,var(--bg2));border:1px solid rgba(245,166,35,.3);border-radius:var(--rl);padding:14px 18px;display:grid;grid-template-columns:1fr auto auto auto;gap:14px;align-items:center;margin-top:10px}
 
-/* ── TOTAL ROW ── */
-.total-row { display: grid; grid-template-columns: 1fr 80px 90px 90px; gap: 12px; padding: 12px 14px; border-radius: var(--radius); background: color-mix(in srgb, var(--gold) 8%, var(--bg2)); border: 1px solid rgba(245,166,35,.3); margin-top: 8px; }
-.total-row span { font-family: var(--mono); font-size: 14px; font-weight: 500; }
-.total-label { color: var(--gold); }
-.total-usd { color: var(--gold); text-align: right; }
-.total-gs  { color: var(--white); text-align: right; }
+/* SUMMARY */
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.sum-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden}
+.sum-bh{background:var(--bg3);padding:9px 14px;font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+.sum-line{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid var(--border);font-size:13px}
+.sum-line:last-child{border-bottom:none}
+.sum-line.tot{background:var(--bg3)}.sum-line.tot .sum-lv{color:var(--gold)}.sum-line.tot .sum-ll{color:var(--gold);font-weight:600}
+.sum-ll{color:var(--text)}
+.sum-lv{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--white)}
+.zero{color:var(--green)}
+.ntag{font-size:10px;color:var(--muted);background:var(--bg3);padding:2px 7px;border-radius:4px}
 
-/* ── SUMMARY GRID ── */
-.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-.cost-block { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-.cost-block-header { background: var(--bg3); padding: 10px 14px; font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-.cost-line { display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
-.cost-line:last-child { border-bottom: none; }
-.cost-line-label { color: var(--text); }
-.cost-line-val { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--white); }
-.cost-line.total { background: var(--bg3); }
-.cost-line.total .cost-line-label { color: var(--gold); font-weight: 600; }
-.cost-line.total .cost-line-val { color: var(--gold); }
-.cost-line .zero { color: var(--green); }
-.cost-line .note-tag { font-size: 10px; color: var(--muted); background: var(--bg3); padding: 2px 7px; border-radius: 4px; }
+/* ROI TABLE */
+.rt{width:100%;border-collapse:collapse}
+.rt th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);font-weight:500}
+.rt th:not(:first-child){text-align:right}
+.rt td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px}
+.rt td:not(:first-child){text-align:right;font-family:var(--mono)}
+.rt tr:last-child td{border-bottom:none;font-weight:600;background:var(--bg3)}
+.sc-l td:not(:first-child){color:#60A5FA}
+.sc-m td:not(:first-child){color:var(--cyan)}
+.sc-h td:not(:first-child){color:var(--green)}
+.sc-t td{color:var(--gold)!important}
 
-/* ── ROI TABLE ── */
-.roi-table { width: 100%; border-collapse: collapse; }
-.roi-table th { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); font-weight: 500; }
-.roi-table th:not(:first-child) { text-align: right; }
-.roi-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
-.roi-table td:not(:first-child) { text-align: right; font-family: var(--mono); }
-.roi-table tr:last-child td { border-bottom: none; font-weight: 600; background: var(--bg3); }
-.roi-table .scenario-low  td:not(:first-child) { color: #60A5FA; }
-.roi-table .scenario-mid  td:not(:first-child) { color: var(--cyan); }
-.roi-table .scenario-high td:not(:first-child) { color: var(--green); }
-.roi-table .total-row-roi td { color: var(--gold) !important; }
+/* SCEN BTNS */
+.scen-wrap{display:flex;gap:8px;margin-bottom:16px}
+.sb{padding:6px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg3);color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;font-family:var(--sans)}
+.sb:hover{border-color:var(--cyan);color:var(--white)}
+.sb.active{background:var(--cyan);border-color:var(--cyan);color:var(--bg)}
 
-/* ── WHISPER BOX ── */
-.whisper-box { background: color-mix(in srgb, var(--green) 8%, var(--bg2)); border: 1px solid rgba(34,197,94,.3); border-radius: var(--radius); padding: 10px 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-.whisper-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
-.whisper-text { font-size: 12px; color: var(--green); font-weight: 500; }
-.whisper-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+/* WHISPER TAG */
+.wtag{background:color-mix(in srgb,var(--green) 8%,var(--bg2));border:1px solid rgba(34,197,94,.3);border-radius:var(--r);padding:9px 14px;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.wdot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
+.wt{font-size:12px;color:var(--green);font-weight:500}
+.ws{font-size:11px;color:var(--muted);margin-top:1px}
 
-/* ── SCENARIO BUTTONS ── */
-.scenario-btns { display: flex; gap: 8px; margin-bottom: 20px; }
-.scen-btn { padding: 7px 16px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg3); color: var(--muted); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .2s; font-family: var(--sans); }
-.scen-btn:hover { border-color: var(--cyan); color: var(--white); }
-.scen-btn.active { background: var(--cyan); border-color: var(--cyan); color: var(--bg); }
-
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px 18px}
 </style>
 </head>
 <body>
 
 <nav class="nav">
-  <div class="nav-logo">
-    <div class="nav-logo-dot">IA</div>
-    <div>
-      <div class="nav-logo-text">Célula IA</div>
-      <div class="nav-logo-sub">Inverfin · 2025</div>
-    </div>
+  <div class="logo">
+    <div class="logo-sq">IA</div>
+    <div><div class="logo-t">Célula IA</div><div class="logo-s">Inverfin · 2025</div></div>
   </div>
-  <div class="tab active" onclick="showTab('resumen')">📊 Resumen Ejecutivo</div>
-  <div class="tab" onclick="showTab('equipo')">👥 Equipo</div>
-  <div class="tab" onclick="showTab('apis')">🤖 APIs por Iniciativa</div>
+  <div class="tab active" onclick="showTab('resumen')">📊 Resumen</div>
+  <div class="tab" onclick="showTab('iniciativas')">🤖 Iniciativas</div>
   <div class="tab" onclick="showTab('auditoria')">📞 Auditoría Llamadas</div>
+  <div class="tab" onclick="showTab('equipo')">👥 Equipo</div>
   <div class="tab" onclick="showTab('roi')">💰 ROI Escenarios</div>
 </nav>
 
-<!-- ═══════════════════════════════════════════════════
-     TAB 1 — RESUMEN EJECUTIVO
-═══════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════════
+     RESUMEN EJECUTIVO
+══════════════════════════════════════════════════════ -->
 <div class="page active" id="page-resumen">
 
-  <div class="section-title">Parámetros globales</div>
-  <div class="ctrl-grid" style="margin-bottom:20px">
-    <div class="ctrl-item">
-      <div class="ctrl-label">Tipo de cambio <span class="ctrl-val" id="fx-out">7.800 Gs/USD</span></div>
-      <input type="range" min="7000" max="8500" step="100" value="7800" id="fx-slider" oninput="updateAll()">
+  <div class="sh">Parámetros globales</div>
+  <div class="ctrl-row" style="margin-bottom:18px">
+    <div class="ci">
+      <div class="cl">Tipo de cambio <span class="cv" id="fx-v">7.800 Gs/USD</span></div>
+      <input type="range" min="7000" max="8500" step="50" value="7800" id="g-fx" oninput="ua()">
     </div>
-    <div class="ctrl-item">
-      <div class="ctrl-label">Escenario de ventas</div>
-      <div class="scenario-btns">
-        <button class="scen-btn" onclick="setScenario('low',this)">Bajo +1%</button>
-        <button class="scen-btn active" onclick="setScenario('mid',this)">Medio +2%</button>
-        <button class="scen-btn" onclick="setScenario('high',this)">Alto +3–5%</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- KPIs -->
-  <div class="section-title">Resultado financiero OLA 1</div>
-  <div class="metrics" style="margin-bottom:24px">
-    <div class="metric">
-      <div class="metric-label">Beneficio escenario seleccionado</div>
-      <div class="metric-val" id="res-benefit">20.165</div>
-      <div class="metric-sub">MM Gs / año</div>
-    </div>
-    <div class="metric accent-red">
-      <div class="metric-label">Costo total anual Célula IA</div>
-      <div class="metric-val" id="res-cost">1.503</div>
-      <div class="metric-sub">MM Gs / año</div>
-    </div>
-    <div class="metric accent-green">
-      <div class="metric-label">ROI neto</div>
-      <div class="metric-val" id="res-roi">18.662</div>
-      <div class="metric-sub">MM Gs / año</div>
-    </div>
-    <div class="metric accent-gold">
-      <div class="metric-label">Costo / Beneficio</div>
-      <div class="metric-val" id="res-pct">7,5%</div>
-      <div class="metric-sub">del beneficio esperado</div>
-    </div>
-    <div class="metric accent-cyan">
-      <div class="metric-label">Múltiplo ROI</div>
-      <div class="metric-val" id="res-mult">13×</div>
-      <div class="metric-sub">beneficio vs. inversión</div>
-    </div>
-  </div>
-
-  <!-- Cost breakdown summary -->
-  <div class="section-title">Estructura de costo anual</div>
-  <div class="summary-grid">
-    <div class="cost-block">
-      <div class="cost-block-header">Equipo Célula IA</div>
-      <div class="cost-line">
-        <span class="cost-line-label">2 Desarrolladores IA (100%)</span>
-        <span class="cost-line-val" id="sum-dev">31.200 MM/mes</span>
-      </div>
-      <div class="cost-line">
-        <span class="cost-line-label">Auxiliar (100%)</span>
-        <span class="cost-line-val">3.900 MM/mes</span>
-      </div>
-      <div class="cost-line">
-        <span class="cost-line-label">Project Leader (20%)</span>
-        <span class="cost-line-val">3.120 MM/mes</span>
-      </div>
-      <div class="cost-line total">
-        <span class="cost-line-label">Total equipo / año</span>
-        <span class="cost-line-val" id="sum-team">458.640 MM Gs</span>
-      </div>
-    </div>
-
-    <div class="cost-block">
-      <div class="cost-block-header">Servicios externos</div>
-      <div class="cost-line">
-        <span class="cost-line-label">STT Transcripción (200k llam/mes)</span>
-        <span class="cost-line-val zero">$0 <span class="note-tag">Whisper OSS</span></span>
-      </div>
-      <div class="cost-line">
-        <span class="cost-line-label">GPU cloud para Whisper</span>
-        <span class="cost-line-val" id="sum-gpu">30 MM Gs/año</span>
-      </div>
-      <div class="cost-line">
-        <span class="cost-line-label">APIs de IA (todas las iniciativas)</span>
-        <span class="cost-line-val" id="sum-api">1.014 MM Gs/año</span>
-      </div>
-      <div class="cost-line">
-        <span class="cost-line-label">Infraestructura / licencias</span>
-        <span class="cost-line-val" id="sum-infra">30 MM Gs/año</span>
-      </div>
-      <div class="cost-line total">
-        <span class="cost-line-label">Total externos / año</span>
-        <span class="cost-line-val" id="sum-ext">1.074 MM Gs</span>
+    <div class="ci">
+      <div class="cl">Escenario ROI</div>
+      <div class="scen-wrap">
+        <button class="sb" onclick="setSc('low',this)">Bajo +1%</button>
+        <button class="sb active" onclick="setSc('mid',this)">Medio +2%</button>
+        <button class="sb" onclick="setSc('high',this)">Alto +3–5%</button>
       </div>
     </div>
   </div>
 
-  <!-- Grand total bar -->
-  <div style="background:color-mix(in srgb,var(--gold) 10%,var(--bg2));border:1px solid rgba(245,166,35,.35);border-radius:var(--radius-lg);padding:16px 20px;display:grid;grid-template-columns:1fr auto auto auto;gap:16px;align-items:center">
+  <div class="sh">Resultado financiero OLA 1</div>
+  <div class="metrics" style="margin-bottom:22px">
+    <div class="m ao"><div class="m-l">Beneficio escenario</div><div class="m-v" id="s-ben">20.165</div><div class="m-s">MM Gs / año</div></div>
+    <div class="m ar"><div class="m-l">Costo total Célula IA</div><div class="m-v" id="s-cost">1.503</div><div class="m-s">MM Gs / año</div></div>
+    <div class="m ag"><div class="m-l">ROI neto</div><div class="m-v" id="s-roi">18.662</div><div class="m-s">MM Gs / año</div></div>
+    <div class="m ac"><div class="m-l">Costo / Beneficio</div><div class="m-v" id="s-pct">7,5%</div><div class="m-s">del beneficio</div></div>
+    <div class="m"><div class="m-l">Múltiplo ROI</div><div class="m-v" id="s-mult">13×</div><div class="m-s">beneficio / inversión</div></div>
+  </div>
+
+  <div class="sh">Estructura de costo</div>
+  <div class="sum-grid">
+    <div class="sum-block">
+      <div class="sum-bh">Equipo Célula IA</div>
+      <div class="sum-line"><span class="sum-ll">2 Desarrolladores IA (100%)</span><span class="sum-lv" id="s-dev">31.200 MM/mes</span></div>
+      <div class="sum-line"><span class="sum-ll">Auxiliar (100%)</span><span class="sum-lv" id="s-aux">3.900 MM/mes</span></div>
+      <div class="sum-line"><span class="sum-ll">Project Leader (20%)</span><span class="sum-lv" id="s-pl">3.120 MM/mes</span></div>
+      <div class="sum-line tot"><span class="sum-ll">Total equipo / año</span><span class="sum-lv" id="s-team-yr">458.640 MM Gs</span></div>
+    </div>
+    <div class="sum-block">
+      <div class="sum-bh">Servicios externos</div>
+      <div class="sum-line"><span class="sum-ll">STT · 200k llamadas/mes</span><span class="sum-lv zero">$0 <span class="ntag">Whisper OSS</span></span></div>
+      <div class="sum-line"><span class="sum-ll">GPU cloud para Whisper</span><span class="sum-lv" id="s-gpu">30 MM Gs/año</span></div>
+      <div class="sum-line"><span class="sum-ll">APIs de IA (todas iniciativas)</span><span class="sum-lv" id="s-api-gs">1.014 MM Gs/año</span></div>
+      <div class="sum-line"><span class="sum-ll">Infraestructura / licencias</span><span class="sum-lv">30 MM Gs/año</span></div>
+      <div class="sum-line tot"><span class="sum-ll">Total externos / año</span><span class="sum-lv" id="s-ext-yr">1.074 MM Gs</span></div>
+    </div>
+  </div>
+
+  <div class="total-bar">
     <div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:2px">COSTO TOTAL ANUAL CÉLULA IA</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:2px">COSTO TOTAL ANUAL CÉLULA IA</div>
       <div style="font-size:11px;color:var(--muted)">Equipo + GPU + APIs + Infraestructura</div>
     </div>
-    <div style="text-align:right">
-      <div style="font-size:10px;color:var(--muted)">USD/año</div>
-      <div style="font-family:var(--mono);font-size:18px;color:var(--gold)" id="sum-usd-total">$192.498</div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-size:10px;color:var(--muted)">MM Gs/año</div>
-      <div style="font-family:var(--mono);font-size:18px;color:var(--gold)" id="sum-gs-total">1.503 MM</div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-size:10px;color:var(--muted)">ROI neto medio</div>
-      <div style="font-family:var(--mono);font-size:18px;color:var(--green)" id="sum-roi-total">+18.662 MM</div>
-    </div>
+    <div style="text-align:right"><div style="font-size:10px;color:var(--muted)">USD/año</div><div style="font-family:var(--mono);font-size:18px;color:var(--gold)" id="s-usd-t">—</div></div>
+    <div style="text-align:right"><div style="font-size:10px;color:var(--muted)">MM Gs/año</div><div style="font-family:var(--mono);font-size:18px;color:var(--gold)" id="s-gs-t">—</div></div>
+    <div style="text-align:right"><div style="font-size:10px;color:var(--muted)">ROI neto</div><div style="font-family:var(--mono);font-size:18px;color:var(--green)" id="s-roi-t">—</div></div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     TAB 2 — EQUIPO
-═══════════════════════════════════════════════════ -->
-<div class="page" id="page-equipo">
-  <div class="section-title">Composición del equipo Célula IA</div>
-  <div class="ctrl-grid">
-    <div class="ctrl-item">
-      <div class="ctrl-label">Salario Dev IA (USD/mes) <span class="ctrl-val" id="dev-sal-out">$2.000</span></div>
-      <input type="range" min="1000" max="4000" step="100" value="2000" id="dev-sal" oninput="updateAll()">
-    </div>
-    <div class="ctrl-item">
-      <div class="ctrl-label">Salario Auxiliar (USD/mes) <span class="ctrl-val" id="aux-sal-out">$500</span></div>
-      <input type="range" min="300" max="1500" step="50" value="500" id="aux-sal" oninput="updateAll()">
-    </div>
-    <div class="ctrl-item">
-      <div class="ctrl-label">Salario Project Leader (USD/mes) <span class="ctrl-val" id="pl-sal-out">$2.000</span></div>
-      <input type="range" min="1000" max="5000" step="100" value="2000" id="pl-sal" oninput="updateAll()">
-    </div>
-    <div class="ctrl-item">
-      <div class="ctrl-label">Dedicación Project Leader <span class="ctrl-val" id="pl-ded-out">20%</span></div>
-      <input type="range" min="5" max="100" step="5" value="20" id="pl-ded" oninput="updateAll()">
-    </div>
-  </div>
+<!-- ══════════════════════════════════════════════════════
+     INICIATIVAS — con sliders individuales
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-iniciativas">
 
-  <div class="metrics">
-    <div class="metric"><div class="metric-label">Costo mensual equipo</div><div class="metric-val" id="eq-month">$4.900</div><div class="metric-sub">USD / mes</div></div>
-    <div class="metric accent-gold"><div class="metric-label">Costo mensual en Gs</div><div class="metric-val" id="eq-month-gs">38.220 MM</div><div class="metric-sub">Gs / mes</div></div>
-    <div class="metric accent-red"><div class="metric-label">Costo anual equipo</div><div class="metric-val" id="eq-year-gs">458.640 MM</div><div class="metric-sub">Gs / año</div></div>
-    <div class="metric"><div class="metric-label">Costo anual en USD</div><div class="metric-val" id="eq-year-usd">$58.800</div><div class="metric-sub">USD / año</div></div>
-  </div>
-
-  <div style="margin-top:20px" class="card">
-    <table style="width:100%;border-collapse:collapse">
-      <thead>
-        <tr style="border-bottom:1px solid var(--border)">
-          <th style="text-align:left;padding:10px 12px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Rol</th>
-          <th style="text-align:center;padding:10px 12px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Cant.</th>
-          <th style="text-align:center;padding:10px 12px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Dedicación</th>
-          <th style="text-align:right;padding:10px 12px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">USD/mes</th>
-          <th style="text-align:right;padding:10px 12px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Gs/mes</th>
-          <th style="text-align:right;padding:10px 12px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Gs/año</th>
-        </tr>
-      </thead>
-      <tbody id="team-table-body"></tbody>
-      <tfoot>
-        <tr style="background:var(--bg3);border-top:1px solid var(--border)">
-          <td colspan="3" style="padding:12px;font-weight:600;color:var(--gold);font-size:14px">TOTAL EQUIPO</td>
-          <td style="text-align:right;padding:12px;font-family:var(--mono);font-weight:600;color:var(--gold)" id="team-tot-usd"></td>
-          <td style="text-align:right;padding:12px;font-family:var(--mono);font-weight:600;color:var(--gold)" id="team-tot-gs-mon"></td>
-          <td style="text-align:right;padding:12px;font-family:var(--mono);font-weight:600;color:var(--gold)" id="team-tot-gs-yr"></td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════
-     TAB 3 — APIs POR INICIATIVA
-═══════════════════════════════════════════════════ -->
-<div class="page" id="page-apis">
-  <div class="section-title">Parámetros de APIs</div>
-  <div class="ctrl-grid">
-    <div class="ctrl-item">
-      <div class="ctrl-label">Modelo de IA</div>
-      <select id="api-model" onchange="updateAll()">
-        <option value="gpt4o">GPT-4o ($2.50/$10.00 por 1M tok)</option>
-        <option value="mini">GPT-4o mini ($0.15/$0.60 por 1M tok)</option>
-        <option value="claude">Claude Sonnet ($3.00/$15.00 por 1M tok)</option>
-        <option value="mix">Mix: mini base + GPT-4o solo en complejos</option>
+  <div class="sh">Parámetros de APIs</div>
+  <div class="ctrl-row">
+    <div class="ci">
+      <div class="cl">Modelo de IA (global)</div>
+      <select id="g-model" onchange="ua()">
+        <option value="gpt4o">GPT-4o ($2.50 / $10.00 por 1M tok)</option>
+        <option value="mini">GPT-4o mini ($0.15 / $0.60 por 1M tok)</option>
+        <option value="claude">Claude Sonnet ($3.00 / $15.00 por 1M tok)</option>
+        <option value="mix">Mix: mini base + GPT-4o para complejos</option>
       </select>
     </div>
-    <div class="ctrl-item">
-      <div class="ctrl-label">Factor adopción <span class="ctrl-val" id="adopt-out">70%</span></div>
-      <input type="range" min="20" max="100" step="5" value="70" id="adopt-sl" oninput="updateAll()">
+    <div class="ci">
+      <div class="cl">Factor adopción global <span class="cv" id="adopt-v">70%</span></div>
+      <input type="range" min="10" max="100" step="5" value="70" id="g-adopt" oninput="ua()">
+    </div>
+    <div class="ci">
+      <div class="cl">Tipo de cambio <span class="cv" id="fx-v2">7.800 Gs/USD</span></div>
+      <input type="range" min="7000" max="8500" step="50" value="7800" id="g-fx2" oninput="ua()">
     </div>
   </div>
 
-  <div class="whisper-box">
-    <div class="whisper-dot"></div>
-    <div>
-      <div class="whisper-text">STT (transcripción de voz): Whisper open-source — costo = $0</div>
-      <div class="whisper-sub">200.000 llamadas/mes procesadas localmente. Solo se paga la GPU cloud (~$30–35 MM Gs/año)</div>
-    </div>
+  <div class="wtag">
+    <div class="wdot"></div>
+    <div><div class="wt">STT (transcripción): Whisper open-source — costo = $0</div><div class="ws">200.000 llamadas/mes procesadas localmente. Solo GPU cloud (~30 MM Gs/año)</div></div>
   </div>
 
-  <div class="init-row-header">
-    <span>Iniciativa</span><span style="text-align:right">OLA</span><span style="text-align:right">USD/año</span><span style="text-align:right">MM Gs/año</span>
-  </div>
-  <div id="api-list"></div>
+  <div id="init-list"></div>
 
-  <div class="total-row" id="api-total-row">
-    <span class="total-label">TOTAL APIs todas las iniciativas</span>
-    <span></span>
-    <span class="total-usd" id="api-tot-usd">$129.958</span>
-    <span class="total-gs" id="api-tot-gs">1.014 MM</span>
+  <div class="total-bar" id="api-total-bar">
+    <div><div style="font-size:11px;color:var(--muted)">TOTAL APIs · todas las iniciativas</div></div>
+    <div></div>
+    <div style="text-align:right"><div style="font-size:10px;color:var(--muted)">USD/año</div><div style="font-family:var(--mono);font-size:18px;color:var(--gold)" id="api-tot-usd">—</div></div>
+    <div style="text-align:right"><div style="font-size:10px;color:var(--muted)">MM Gs/año</div><div style="font-family:var(--mono);font-size:18px;color:var(--cyan)" id="api-tot-gs">—</div></div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     TAB 4 — AUDITORÍA LLAMADAS
-═══════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════════
+     AUDITORÍA LLAMADAS
+══════════════════════════════════════════════════════ -->
 <div class="page" id="page-auditoria">
-  <div class="section-title">Parámetros de auditoría</div>
-  <div class="ctrl-grid">
-    <div class="ctrl-item">
-      <div class="ctrl-label">Llamadas/mes (total contact center) <span class="ctrl-val" id="calls-out">200.000</span></div>
-      <input type="range" min="50000" max="500000" step="10000" value="200000" id="calls-sl" oninput="updateAll()">
-    </div>
-    <div class="ctrl-item">
-      <div class="ctrl-label">% a auditar <span class="ctrl-val" id="aud-pct-out">30%</span></div>
-      <input type="range" min="5" max="100" step="5" value="30" id="aud-pct-sl" oninput="updateAll()">
-    </div>
-    <div class="ctrl-item">
-      <div class="ctrl-label">Duración promedio <span class="ctrl-val" id="dur-out">4 min</span></div>
-      <input type="range" min="1" max="15" step="1" value="4" id="dur-sl" oninput="updateAll()">
-    </div>
-    <div class="ctrl-item">
-      <div class="ctrl-label">Modelo análisis IA</div>
-      <select id="aud-llm" onchange="updateAll()">
-        <option value="mini">GPT-4o mini ($0.15/$0.60)</option>
-        <option value="gpt4o">GPT-4o ($2.50/$10.00)</option>
-        <option value="claude">Claude Sonnet ($3.00/$15.00)</option>
-      </select>
-    </div>
-    <div class="ctrl-item">
-      <div class="ctrl-label">Modelo STT</div>
-      <select id="aud-stt" onchange="updateAll()">
-        <option value="0">Whisper OSS — $0 (recomendado)</option>
-        <option value="0.006">Whisper API — $0.006/min</option>
-        <option value="0.002">Deepgram Nova — $0.002/min</option>
-      </select>
-    </div>
+  <div class="sh">Parámetros de auditoría de llamadas</div>
+  <div class="ctrl-row">
+    <div class="ci"><div class="cl">Llamadas/mes total <span class="cv" id="a-calls-v">200.000</span></div><input type="range" min="10000" max="500000" step="5000" value="200000" id="a-calls" oninput="ua()"></div>
+    <div class="ci"><div class="cl">% a auditar <span class="cv" id="a-pct-v">30%</span></div><input type="range" min="5" max="100" step="5" value="30" id="a-pct" oninput="ua()"></div>
+    <div class="ci"><div class="cl">Duración promedio <span class="cv" id="a-dur-v">4 min</span></div><input type="range" min="1" max="15" step="1" value="4" id="a-dur" oninput="ua()"></div>
+    <div class="ci"><div class="cl">Modelo análisis</div><select id="a-llm" onchange="ua()">
+      <option value="mini">GPT-4o mini ($0.15/$0.60)</option>
+      <option value="gpt4o">GPT-4o ($2.50/$10.00)</option>
+      <option value="claude">Claude Sonnet ($3.00/$15.00)</option>
+    </select></div>
+    <div class="ci"><div class="cl">STT</div><select id="a-stt" onchange="ua()">
+      <option value="0">Whisper OSS — $0 ✓ recomendado</option>
+      <option value="0.006">Whisper API — $0.006/min</option>
+      <option value="0.002">Deepgram — $0.002/min</option>
+    </select></div>
   </div>
 
-  <div class="whisper-box" id="stt-status-box">
-    <div class="whisper-dot"></div>
-    <div>
-      <div class="whisper-text" id="stt-status-text">Whisper open-source — sin costo de API de transcripción</div>
-      <div class="whisper-sub" id="stt-status-sub">GPU cloud: ~$200–400 USD/mes dependiendo del volumen</div>
-    </div>
+  <div class="wtag" id="a-stt-box">
+    <div class="wdot"></div>
+    <div><div class="wt" id="a-stt-t">Whisper open-source — sin costo de transcripción</div><div class="ws" id="a-stt-s">GPU cloud necesaria: ~$200–400 USD/mes</div></div>
   </div>
 
   <div class="metrics">
-    <div class="metric"><div class="metric-label">Llamadas auditadas/año</div><div class="metric-val" id="aud-calls">720.000</div><div class="metric-sub" id="aud-calls-sub">60.000 / mes</div></div>
-    <div class="metric"><div class="metric-label">Minutos procesados/año</div><div class="metric-val" id="aud-mins">2.880.000</div><div class="metric-sub">min/año</div></div>
-    <div class="metric"><div class="metric-label">Costo STT/año</div><div class="metric-val zero" id="aud-stt-cost">$0</div><div class="metric-sub">Whisper OSS</div></div>
-    <div class="metric"><div class="metric-label">Costo LLM/año</div><div class="metric-val" id="aud-llm-cost">$292</div><div class="metric-sub">análisis IA</div></div>
-    <div class="metric accent-red"><div class="metric-label">Costo total/año</div><div class="metric-val" id="aud-total-usd">$17.572</div><div class="metric-sub" id="aud-total-gs">137 MM Gs</div></div>
-    <div class="metric"><div class="metric-label">Costo/llamada auditada</div><div class="metric-val" id="aud-per-call">$0.024</div><div class="metric-sub">USD por llamada</div></div>
+    <div class="m"><div class="m-l">Auditadas/año</div><div class="m-v" id="a-m1">720.000</div><div class="m-s" id="a-m1s">60.000/mes</div></div>
+    <div class="m"><div class="m-l">Minutos/año</div><div class="m-v" id="a-m2">2.880.000</div><div class="m-s">procesados</div></div>
+    <div class="m"><div class="m-l">Costo STT/año</div><div class="m-v zero" id="a-m3">$0</div><div class="m-s">Whisper OSS</div></div>
+    <div class="m"><div class="m-l">Costo LLM/año</div><div class="m-v" id="a-m4">$292</div><div class="m-s">análisis</div></div>
+    <div class="m ar"><div class="m-l">Total API/año</div><div class="m-v" id="a-m5">$17.572</div><div class="m-s" id="a-m5s">137 MM Gs</div></div>
+    <div class="m"><div class="m-l">Costo/llamada</div><div class="m-v" id="a-m6">$0.024</div><div class="m-s">USD</div></div>
   </div>
 
-  <div style="margin-top:20px" class="card">
-    <div class="section-title" style="margin-bottom:16px">Desglose de costo anual</div>
-    <table class="roi-table" id="aud-table">
-      <thead><tr><th>Componente</th><th>Supuesto</th><th>USD/año</th><th>MM Gs/año</th></tr></thead>
-      <tbody id="aud-tbody"></tbody>
-    </table>
+  <div class="card" style="margin-top:4px">
+    <div class="sh" style="margin-bottom:14px">Desglose de costo</div>
+    <table class="rt"><thead><tr><th>Componente</th><th>Supuesto</th><th>USD/año</th><th>MM Gs/año</th></tr></thead>
+    <tbody id="a-tbody"></tbody></table>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     TAB 5 — ROI ESCENARIOS
-═══════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════════
+     EQUIPO
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-equipo">
+  <div class="sh">Composición del equipo</div>
+  <div class="ctrl-row">
+    <div class="ci"><div class="cl">Salario Dev IA (USD/mes) <span class="cv" id="e-dev-v">$2.000</span></div><input type="range" min="500" max="5000" step="100" value="2000" id="e-dev" oninput="ua()"></div>
+    <div class="ci"><div class="cl">Salario Auxiliar (USD/mes) <span class="cv" id="e-aux-v">$500</span></div><input type="range" min="200" max="2000" step="50" value="500" id="e-aux" oninput="ua()"></div>
+    <div class="ci"><div class="cl">Salario Project Leader (USD/mes) <span class="cv" id="e-pl-v">$2.000</span></div><input type="range" min="500" max="6000" step="100" value="2000" id="e-pl" oninput="ua()"></div>
+    <div class="ci"><div class="cl">Dedicación PL <span class="cv" id="e-ded-v">20%</span></div><input type="range" min="5" max="100" step="5" value="20" id="e-ded" oninput="ua()"></div>
+    <div class="ci"><div class="cl">Tipo de cambio <span class="cv" id="fx-v3">7.800</span></div><input type="range" min="7000" max="8500" step="50" value="7800" id="g-fx3" oninput="ua()"></div>
+  </div>
+  <div class="metrics">
+    <div class="m"><div class="m-l">Costo mensual equipo</div><div class="m-v" id="e-m1">$4.900</div><div class="m-s">USD/mes</div></div>
+    <div class="m ao"><div class="m-l">Costo mensual en Gs</div><div class="m-v" id="e-m2">38.220 MM</div><div class="m-s">Gs/mes</div></div>
+    <div class="m ar"><div class="m-l">Costo anual equipo</div><div class="m-v" id="e-m3">458.640 MM</div><div class="m-s">Gs/año</div></div>
+    <div class="m"><div class="m-l">Costo anual USD</div><div class="m-v" id="e-m4">$58.800</div><div class="m-s">USD/año</div></div>
+  </div>
+  <div class="card">
+    <table class="rt"><thead><tr><th>Rol</th><th>Cant.</th><th>Dedicación</th><th>USD/mes</th><th>Gs/mes</th><th>Gs/año</th></tr></thead>
+    <tbody id="e-tbody"></tbody>
+    <tfoot><tr style="background:var(--bg3);border-top:1px solid var(--border)">
+      <td colspan="3" style="padding:11px 12px;font-weight:600;color:var(--gold)">TOTAL EQUIPO</td>
+      <td style="padding:11px 12px;font-family:var(--mono);font-weight:600;color:var(--gold)" id="e-tot-usd"></td>
+      <td style="padding:11px 12px;font-family:var(--mono);font-weight:600;color:var(--gold)" id="e-tot-gs-m"></td>
+      <td style="padding:11px 12px;font-family:var(--mono);font-weight:600;color:var(--gold)" id="e-tot-gs-y"></td>
+    </tfoot></table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     ROI ESCENARIOS
+══════════════════════════════════════════════════════ -->
 <div class="page" id="page-roi">
-  <div class="section-title">Base comercial</div>
-  <div class="ctrl-grid">
-    <div class="ctrl-item">
-      <div class="ctrl-label">Vendedores total <span class="ctrl-val" id="sellers-out">1.200</span></div>
-      <input type="range" min="200" max="3000" step="50" value="1200" id="sellers-sl" oninput="updateAll()">
-    </div>
-    <div class="ctrl-item">
-      <div class="ctrl-label">Vta. promedio/vendedor (MM Gs/mes) <span class="ctrl-val" id="vta-out">86,6</span></div>
-      <input type="range" min="20" max="200" step="0.5" value="86.6" id="vta-sl" oninput="updateAll()">
-    </div>
-    <div class="ctrl-item">
-      <div class="ctrl-label">Margen de contribución <span class="ctrl-val" id="margin-out">31%</span></div>
-      <input type="range" min="10" max="60" step="1" value="31" id="margin-sl" oninput="updateAll()">
-    </div>
+  <div class="sh">Base comercial</div>
+  <div class="ctrl-row">
+    <div class="ci"><div class="cl">Vendedores + televendedores <span class="cv" id="r-sel-v">1.200</span></div><input type="range" min="100" max="3000" step="50" value="1200" id="r-sel" oninput="ua()"></div>
+    <div class="ci"><div class="cl">Vta. prom./vendedor (MM Gs/mes) <span class="cv" id="r-vta-v">86,6</span></div><input type="range" min="10" max="300" step="0.5" value="86.6" id="r-vta" oninput="ua()"></div>
+    <div class="ci"><div class="cl">Margen de contribución <span class="cv" id="r-mg-v">31%</span></div><input type="range" min="5" max="70" step="1" value="31" id="r-mg" oninput="ua()"></div>
+  </div>
+  <div class="metrics" style="margin-bottom:20px">
+    <div class="m"><div class="m-l">Ventas anuales canal</div><div class="m-v" id="r-sales">1.246.680</div><div class="m-s">MM Gs/año</div></div>
+    <div class="m ao"><div class="m-l">Contribución base</div><div class="m-v" id="r-contrib">386.471</div><div class="m-s">MM Gs/año</div></div>
+    <div class="m ac"><div class="m-l">Regla clave: cada +1%</div><div class="m-v" id="r-rule">3.865</div><div class="m-s">MM Gs adicionales</div></div>
   </div>
 
-  <div class="metrics" style="margin-bottom:24px">
-    <div class="metric"><div class="metric-label">Ventas anuales canal</div><div class="metric-val" id="roi-sales">1.246.680</div><div class="metric-sub">MM Gs / año</div></div>
-    <div class="metric accent-gold"><div class="metric-label">Contribución base</div><div class="metric-val" id="roi-contrib">386.471</div><div class="metric-sub">MM Gs / año</div></div>
-    <div class="metric accent-cyan"><div class="metric-label">Regla clave: cada +1%</div><div class="metric-val" id="roi-rule">3.865</div><div class="metric-sub">MM Gs adicionales</div></div>
-  </div>
-
-  <div class="section-title">Escenarios por iniciativa OLA 1</div>
-  <div class="card" style="overflow-x:auto">
-    <table class="roi-table" id="roi-table">
-      <thead>
-        <tr>
-          <th style="min-width:220px">Iniciativa</th>
-          <th>Supuesto bajo</th><th>MM Gs bajo</th>
-          <th>Supuesto medio</th><th>MM Gs medio</th>
-          <th>Supuesto alto</th><th>MM Gs alto</th>
-        </tr>
-      </thead>
-      <tbody id="roi-tbody"></tbody>
-      <tfoot>
-        <tr class="total-row-roi">
-          <td>TOTAL OLA 1</td>
-          <td></td><td id="roi-tot-low"></td>
-          <td></td><td id="roi-tot-mid"></td>
-          <td></td><td id="roi-tot-high"></td>
-        </tr>
+  <div class="sh">Escenarios por iniciativa OLA 1</div>
+  <div class="card" style="overflow-x:auto;margin-bottom:14px">
+    <table class="rt" id="r-table">
+      <thead><tr>
+        <th style="min-width:200px">Iniciativa</th>
+        <th>Supuesto bajo</th><th>MM Gs bajo</th>
+        <th>Supuesto medio</th><th>MM Gs medio</th>
+        <th>Supuesto alto</th><th>MM Gs alto</th>
+      </tr></thead>
+      <tbody id="r-tbody"></tbody>
+      <tfoot><tr class="sc-t">
+        <td>TOTAL OLA 1</td><td></td><td id="r-tl"></td><td></td><td id="r-tm"></td><td></td><td id="r-th"></td>
       </tfoot>
     </table>
   </div>
 
-  <div style="margin-top:20px" class="card">
-    <div class="section-title" style="margin-bottom:16px">ROI neto por escenario (beneficio − costo total Célula IA)</div>
-    <table class="roi-table">
-      <thead><tr><th>Escenario</th><th>Beneficio MM Gs</th><th>Costo total MM Gs</th><th>ROI neto MM Gs</th><th>Costo / Beneficio</th><th>Múltiplo</th></tr></thead>
+  <div class="sh">ROI neto (beneficio − costo total Célula IA)</div>
+  <div class="card">
+    <table class="rt">
+      <thead><tr><th>Escenario</th><th>Beneficio</th><th>Costo total</th><th>ROI neto</th><th>Costo/Beneficio</th><th>Múltiplo</th></tr></thead>
       <tbody>
-        <tr class="scenario-low"><td>Bajo</td><td id="net-ben-low">-</td><td id="net-cost">-</td><td id="net-roi-low">-</td><td id="net-pct-low">-</td><td id="net-mult-low">-</td></tr>
-        <tr class="scenario-mid"><td>Medio</td><td id="net-ben-mid">-</td><td id="net-cost2">-</td><td id="net-roi-mid">-</td><td id="net-pct-mid">-</td><td id="net-mult-mid">-</td></tr>
-        <tr class="scenario-high"><td>Alto</td><td id="net-ben-high">-</td><td id="net-cost3">-</td><td id="net-roi-high">-</td><td id="net-pct-high">-</td><td id="net-mult-high">-</td></tr>
+        <tr class="sc-l"><td>Bajo</td><td id="n-bl"></td><td id="n-cl"></td><td id="n-rl"></td><td id="n-pl"></td><td id="n-ml"></td></tr>
+        <tr class="sc-m"><td>Medio</td><td id="n-bm"></td><td id="n-cm"></td><td id="n-rm"></td><td id="n-pm"></td><td id="n-mm"></td></tr>
+        <tr class="sc-h"><td>Alto</td><td id="n-bh"></td><td id="n-ch"></td><td id="n-rh"></td><td id="n-ph"></td><td id="n-mh"></td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
 <script>
-// ── STATE ──────────────────────────────────────────────────────────────────
-const S = {
-  fx: 7800, devSal: 2000, auxSal: 500, plSal: 2000, plDed: 20,
-  apiModel: 'gpt4o', adoption: 0.70,
-  audCalls: 200000, audPct: 0.30, dur: 4, audLlm: 'mini', audStt: 0,
-  sellers: 1200, vtaProm: 86.6, margin: 0.31,
-  scenario: 'mid'
+// ── GLOBAL STATE ──────────────────────────────────────────────────────────
+const G = {
+  fx:7800, model:'gpt4o', adopt:0.70, scenario:'mid',
+  devSal:2000, auxSal:500, plSal:2000, plDed:20,
+  audCalls:200000, audPct:0.30, audDur:4, audLlm:'mini', audStt:0,
+  sellers:1200, vta:86.6, margin:0.31
 };
 
-const LLM_PRICES = {
-  gpt4o: { in: 2.50, out: 10.00 },
-  mini:  { in: 0.15, out: 0.60  },
-  claude:{ in: 3.00, out: 15.00 },
-  mix:   { in: 0.60, out: 2.50  }
+// Per-initiative state (mutable)
+const INI = [
+  { id:'neg',     ola:1, name:'Asistente de Negociación · Inventa/Ventas', users:1200, q:20,  tok:950,  tokOut:350,  note:'Alto volumen · contexto medio', special:null },
+  { id:'suc',     ola:1, name:'Asistente Operativo · Sucursales',          users:260,  q:10,  tok:750,  tokOut:280,  note:'Políticas y procedimientos', special:null },
+  { id:'train',   ola:1, name:'Entrenador de Ventas IA · Avatar',          users:1200, q:3,   tok:2300, tokOut:850,  note:'Simulaciones largas por sesión', special:null },
+  { id:'ref',     ola:1, name:'Referencias IA Agéntica',                   users:33,   q:80,  tok:1200, tokOut:450,  note:'33 agentes · siempre activo', special:'ref' },
+  { id:'audit',   ola:2, name:'Auditoría IA · Llamadas y Mensajes',        users:0,    q:0,   tok:0,    tokOut:0,    note:'Ver tab Auditoría Llamadas', special:'audit' },
+  { id:'cobrint', ola:2, name:'Negociador IA · Multiplataforma',           users:150,  q:15,  tok:1050, tokOut:400,  note:'4 plataformas · gestores cobranza', special:null },
+  { id:'copilot', ola:2, name:'IA Copilot Corporativo',                    users:50,   q:25,  tok:3000, tokOut:1200, note:'Correos + docs · contexto largo', special:null },
+  { id:'pdv',     ola:2, name:'Auditoría IA · Puntos de Venta',            users:30,   q:1,   tok:3500, tokOut:600,  note:'30 fotos/día · visión IA', special:'pdv' },
+];
+
+const LLM = {
+  gpt4o:{ in:2.50, out:10.00 }, mini:{ in:0.15, out:0.60 },
+  claude:{ in:3.00, out:15.00 }, mix:{ in:0.70, out:2.80 }
 };
 
-// Base initiatives (users, queries/day, tok/query, OLA)
-const INITIATIVES = [
-  { id:'neg',     name:'Asistente de Negociación · Inventa/Ventas', ola:1, users:1200, q:20, tok:950,  note:'Alto volumen · contexto medio (historial + producto)' },
-  { id:'suc',     name:'Asistente Operativo · Sucursales',          ola:1, users:260,  q:10, tok:750,  note:'Menor volumen · preguntas sobre políticas' },
-  { id:'train',   name:'Entrenador de Ventas IA · Avatar',          ola:1, users:1200, q:3,  tok:2300, note:'Pocas sesiones · conversaciones largas' },
-  { id:'ref',     name:'Referencias IA Agéntica',                   ola:1, users:33,   q:80, tok:1200, note:'33 agentes · siempre activo' },
-  { id:'audit',   name:'Auditoría IA · Llamadas',                   ola:2, users:0,    q:0,  tok:2600, note:'Costo calculado en tab Auditoría', special:'audit' },
-  { id:'cobrint', name:'Negociador IA · Multiplataforma',           ola:2, users:150,  q:15, tok:1050, note:'Gestores cobranza · 4 plataformas' },
-  { id:'copilot', name:'IA Copilot Corporativo',                    ola:2, users:50,   q:25, tok:3000, note:'Contexto largo · correos + docs' },
-  { id:'pdv',     name:'Auditoría Puntos de Venta',                 ola:2, users:0,    q:0,  tok:3500, note:'30 fotos/día · visión', special:'pdv' },
-];
+const DAYS = 250;
+const fmt   = (n,d=0)=>n.toLocaleString('es-PY',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmtU  = n=>'$'+fmt(Math.round(n));
+const gs    = (usd,mm=true)=>{ const v=usd*G.fx; return mm?fmt(Math.round(v/1e6))+' MM':fmt(Math.round(v)); };
 
-const ROI_SCENARIOS = [
-  { id:'neg',   name:'Asistente Negociación',  low:[1,'ventas'], mid:[2,'ventas'], high:[3,'ventas'] },
-  { id:'suc',   name:'Asistente Sucursales',   low:null,          mid:null,         high:null, note:'Impacto operativo (no en ventas directo)' },
-  { id:'train', name:'Entrenador Ventas IA',   low:[1,'product'], mid:[2,'product'],high:[5,'product'] },
-  { id:'ref',   name:'Referencias IA Agéntica',low:null,          mid:null,         high:null, fixed:{low:3516,mid:4707,high:5449} },
-];
-
-function fmt(n, d=0) { return n.toLocaleString('es-PY',{minimumFractionDigits:d,maximumFractionDigits:d}); }
-function fmtUsd(n) { return '$'+fmt(Math.round(n)); }
-
-function calcApiCost(ini) {
-  const m = LLM_PRICES[S.apiModel];
+// ── COST CALC ────────────────────────────────────────────────────────────
+function calcIni(ini) {
+  if (ini.special==='audit') return calcAudit().totalUsd;
+  const m = LLM[G.model];
   let tokIn, tokOut;
-  if (ini.special === 'audit') {
-    // Uses auditoría tab values
-    return calcAuditCost().llmUsd;
-  } else if (ini.special === 'pdv') {
-    tokIn  = 30 * 250 * ini.tok * 0.7;
-    tokOut = 30 * 250 * 500 * 0.7;
+  if (ini.special==='pdv') {
+    tokIn  = ini.users * ini.q * ini.tok  * DAYS;
+    tokOut = ini.users * ini.q * ini.tokOut * DAYS;
+  } else if (ini.special==='ref') {
+    tokIn  = ini.users * ini.q * ini.tok  * DAYS;
+    tokOut = ini.users * ini.q * ini.tokOut * DAYS;
   } else {
-    tokIn  = ini.users * ini.q * ini.tok * 250 * S.adoption * 0.7;
-    tokOut = ini.users * ini.q * ini.tok * 0.37 * 250 * S.adoption * 0.7;
+    const eff = ini.users * G.adopt;
+    tokIn  = eff * ini.q * ini.tok   * DAYS;
+    tokOut = eff * ini.q * ini.tokOut * DAYS;
   }
   return (tokIn/1e6*m.in) + (tokOut/1e6*m.out);
 }
 
-function calcAuditCost() {
-  const llmP = LLM_PRICES[S.audLlm];
-  const auditedYear = S.audCalls * 12 * S.audPct;
-  const minsYear = auditedYear * S.dur;
-  const sttUsd = minsYear * S.audStt;
-  const tokIn  = auditedYear * (S.dur * 150 + 500);
-  const tokOut = auditedYear * 400;
-  const llmUsd = (tokIn/1e6*llmP.in) + (tokOut/1e6*llmP.out);
-  return { sttUsd, llmUsd, totalUsd: sttUsd+llmUsd, auditedYear, minsYear, perCall:(sttUsd+llmUsd)/auditedYear };
+function calcAudit() {
+  const m = LLM[G.audLlm];
+  const aud = G.audCalls * 12 * G.audPct;
+  const mins= aud * G.audDur;
+  const stt = mins * G.audStt;
+  const tIn = aud * (G.audDur*150 + 500);
+  const tOut= aud * 400;
+  const llm = (tIn/1e6*m.in)+(tOut/1e6*m.out);
+  return { sttUsd:stt, llmUsd:llm, totalUsd:stt+llm, aud, mins, perCall:(stt+llm)/Math.max(aud,1), tIn, tOut };
 }
 
 function calcTeam() {
-  const monthUsd = S.devSal*2 + S.auxSal + S.plSal*(S.plDed/100);
-  const yearUsd  = monthUsd * 12;
-  const monthGs  = monthUsd * S.fx;
-  const yearGs   = yearUsd  * S.fx;
-  return { monthUsd, yearUsd, monthGs, yearGs };
+  const mon = G.devSal*2 + G.auxSal + G.plSal*(G.plDed/100);
+  return { mon, yr:mon*12, monGs:mon*G.fx, yrGs:mon*12*G.fx };
 }
 
-function calcRoiRule() {
-  const sales  = S.sellers * S.vtaProm * 12;
-  const contrib= sales * S.margin;
+function calcTotalCostGs() {
+  const t   = calcTeam().yrGs;
+  const api = INI.reduce((s,i)=>s+calcIni(i),0) * G.fx;
+  const gpu = 30e6, infra = 30e6;
+  return Math.round((t+api+gpu+infra)/1e6);
+}
+
+function calcRoi() {
+  const sales  = G.sellers * G.vta * 12;
+  const contrib= sales * G.margin;
   const rule   = contrib * 0.01;
   return { sales, contrib, rule };
 }
 
-// ── UPDATE ALL ─────────────────────────────────────────────────────────────
-function updateAll() {
-  // Read sliders
-  S.fx      = +document.getElementById('fx-slider').value;
-  S.devSal  = +document.getElementById('dev-sal').value;
-  S.auxSal  = +document.getElementById('aux-sal').value;
-  S.plSal   = +document.getElementById('pl-sal').value;
-  S.plDed   = +document.getElementById('pl-ded').value;
-  S.apiModel= document.getElementById('api-model').value;
-  S.adoption= +document.getElementById('adopt-sl').value / 100;
-  S.audCalls= +document.getElementById('calls-sl').value;
-  S.audPct  = +document.getElementById('aud-pct-sl').value / 100;
-  S.dur     = +document.getElementById('dur-sl').value;
-  S.audLlm  = document.getElementById('aud-llm').value;
-  S.audStt  = +document.getElementById('aud-stt').value;
-  S.sellers = +document.getElementById('sellers-sl').value;
-  S.vtaProm = +document.getElementById('vta-sl').value;
-  S.margin  = +document.getElementById('margin-sl').value / 100;
+// ── SYNC SLIDERS ─────────────────────────────────────────────────────────
+function syncSliders() {
+  // global fx — keep all three in sync
+  const fxVal = +document.getElementById('g-fx').value;
+  ['g-fx','g-fx2','g-fx3'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value=fxVal;
+  });
+  G.fx     = fxVal;
+  G.model  = document.getElementById('g-model').value;
+  G.adopt  = +document.getElementById('g-adopt').value/100;
+  G.devSal = +document.getElementById('e-dev').value;
+  G.auxSal = +document.getElementById('e-aux').value;
+  G.plSal  = +document.getElementById('e-pl').value;
+  G.plDed  = +document.getElementById('e-ded').value;
+  G.audCalls= +document.getElementById('a-calls').value;
+  G.audPct  = +document.getElementById('a-pct').value/100;
+  G.audDur  = +document.getElementById('a-dur').value;
+  G.audLlm  = document.getElementById('a-llm').value;
+  G.audStt  = +document.getElementById('a-stt').value;
+  G.sellers = +document.getElementById('r-sel').value;
+  G.vta     = +document.getElementById('r-vta').value;
+  G.margin  = +document.getElementById('r-mg').value/100;
 
-  // Update display values next to sliders
-  document.getElementById('fx-out').textContent     = fmt(S.fx)+' Gs/USD';
-  document.getElementById('dev-sal-out').textContent = '$'+fmt(S.devSal);
-  document.getElementById('aux-sal-out').textContent = '$'+fmt(S.auxSal);
-  document.getElementById('pl-sal-out').textContent  = '$'+fmt(S.plSal);
-  document.getElementById('pl-ded-out').textContent  = S.plDed+'%';
-  document.getElementById('adopt-out').textContent   = Math.round(S.adoption*100)+'%';
-  document.getElementById('calls-out').textContent   = fmt(S.audCalls);
-  document.getElementById('aud-pct-out').textContent = Math.round(S.audPct*100)+'%';
-  document.getElementById('dur-out').textContent     = S.dur+' min';
-  document.getElementById('sellers-out').textContent = fmt(S.sellers);
-  document.getElementById('vta-out').textContent     = S.vtaProm.toFixed(1);
-  document.getElementById('margin-out').textContent  = Math.round(S.margin*100)+'%';
+  // Per-initiative sliders
+  INI.forEach(ini=>{
+    if(ini.special==='audit') return;
+    const uEl=document.getElementById(`sl-u-${ini.id}`);
+    const qEl=document.getElementById(`sl-q-${ini.id}`);
+    const tEl=document.getElementById(`sl-t-${ini.id}`);
+    if(uEl) ini.users=+uEl.value;
+    if(qEl) ini.q=+qEl.value;
+    if(tEl) ini.tok=+tEl.value;
+  });
 
-  renderTeam();
-  renderApis();
-  renderAuditoria();
+  // Display values
+  set('fx-v',  fmt(G.fx)+' Gs/USD');
+  set('fx-v2', fmt(G.fx)+' Gs/USD');
+  set('fx-v3', fmt(G.fx));
+  set('adopt-v', Math.round(G.adopt*100)+'%');
+  set('e-dev-v', '$'+fmt(G.devSal));
+  set('e-aux-v', '$'+fmt(G.auxSal));
+  set('e-pl-v',  '$'+fmt(G.plSal));
+  set('e-ded-v', G.plDed+'%');
+  set('a-calls-v', fmt(G.audCalls));
+  set('a-pct-v',   Math.round(G.audPct*100)+'%');
+  set('a-dur-v',   G.audDur+' min');
+  set('r-sel-v', fmt(G.sellers));
+  set('r-vta-v', G.vta.toFixed(1));
+  set('r-mg-v',  Math.round(G.margin*100)+'%');
+}
+
+function set(id,v){ const el=document.getElementById(id); if(el) el.textContent=v; }
+
+// ── RENDER INITIATIVES ────────────────────────────────────────────────────
+function buildInitList() {
+  const container = document.getElementById('init-list');
+  container.innerHTML = INI.map(ini => {
+    const isAudit = ini.special==='audit';
+    const isPdv   = ini.special==='pdv';
+    const isRef   = ini.special==='ref';
+    const olaCls  = ini.ola===1?'ola1':'ola2';
+    const olaLbl  = `OLA ${ini.ola}`;
+
+    let sliders = '';
+    if (isAudit) {
+      sliders = `<div style="font-size:12px;color:var(--muted);padding:4px 0">
+        Costo calculado dinámicamente en el tab <strong style="color:var(--cyan)">Auditoría Llamadas</strong>.
+        Cambiá los parámetros allí y el total se refleja aquí automáticamente.
+      </div>`;
+    } else {
+      const uLbl = isPdv ? 'Fotos/día' : isRef ? 'Agentes activos' : 'Usuarios totales';
+      const qLbl = isPdv ? 'Análisis/foto' : 'Consultas/día';
+      const uMax = isPdv ? 200 : isRef ? 100 : 3000;
+      const qMax = isPdv ? 5 : isRef ? 200 : 100;
+      const adNote = (isRef||isPdv) ? `<div style="font-size:10px;color:var(--muted);margin-top:3px">Factor adopción no aplica — siempre activo</div>` : `<div style="font-size:10px;color:var(--muted);margin-top:3px">Factor adopción global: <span style="color:var(--cyan)">${Math.round(G.adopt*100)}%</span></div>`;
+
+      sliders = `<div class="init-sliders">
+        <div class="ci">
+          <div class="cl">${uLbl} <span class="cv" id="lbl-u-${ini.id}">${fmt(ini.users)}</span></div>
+          <input type="range" min="1" max="${uMax}" step="1" value="${ini.users}" id="sl-u-${ini.id}" oninput="ua()">
+          ${adNote}
+        </div>
+        <div class="ci">
+          <div class="cl">${qLbl}/día <span class="cv" id="lbl-q-${ini.id}">${ini.q}</span></div>
+          <input type="range" min="1" max="${qMax}" step="1" value="${ini.q}" id="sl-q-${ini.id}" oninput="ua()">
+        </div>
+        <div class="ci">
+          <div class="cl">Tokens input/consulta <span class="cv" id="lbl-t-${ini.id}">${fmt(ini.tok)}</span></div>
+          <input type="range" min="100" max="8000" step="50" value="${ini.tok}" id="sl-t-${ini.id}" oninput="ua()">
+          <div style="font-size:10px;color:var(--muted);margin-top:3px">Output ≈ ${Math.round(ini.tokOut/ini.tok*100)}% del input</div>
+        </div>
+      </div>`;
+    }
+
+    return `<div class="init-card">
+      <div class="init-header" onclick="toggleInit('${ini.id}')">
+        <div>
+          <div class="init-name">${ini.name}</div>
+          <div class="init-desc">${ini.note}</div>
+        </div>
+        <span class="ola-b ${olaCls}">${olaLbl}</span>
+        <div class="init-usd" id="h-usd-${ini.id}">—</div>
+        <div class="init-gs"  id="h-gs-${ini.id}">—</div>
+        <div class="expand-btn" id="exp-${ini.id}">▸</div>
+      </div>
+      <div class="init-body" id="body-${ini.id}">
+        ${sliders}
+        <div class="cost-pills" id="pills-${ini.id}"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleInit(id) {
+  const body = document.getElementById(`body-${id}`);
+  const btn  = document.getElementById(`exp-${id}`);
+  const open = body.classList.toggle('open');
+  btn.style.transform = open ? 'rotate(90deg)' : '';
+}
+
+function renderInitCosts() {
+  let totalUsd = 0;
+  const maxUsd = Math.max(...INI.map(ini=>calcIni(ini)), 1);
+
+  INI.forEach(ini => {
+    const usd = calcIni(ini);
+    totalUsd += usd;
+
+    set(`h-usd-${ini.id}`, fmtU(usd));
+    set(`h-gs-${ini.id}`,  gs(usd)+' Gs');
+
+    // Update labels for sliders
+    if (ini.special!=='audit') {
+      const uEl=document.getElementById(`lbl-u-${ini.id}`);
+      const qEl=document.getElementById(`lbl-q-${ini.id}`);
+      const tEl=document.getElementById(`lbl-t-${ini.id}`);
+      if(uEl) uEl.textContent = fmt(ini.users);
+      if(qEl) qEl.textContent = ini.q;
+      if(tEl) tEl.textContent = fmt(ini.tok);
+    }
+
+    // Pills
+    const pillsEl = document.getElementById(`pills-${ini.id}`);
+    if (pillsEl && ini.special!=='audit') {
+      const eff = (ini.special==='ref'||ini.special==='pdv') ? ini.users : Math.round(ini.users*G.adopt);
+      const tInM  = Math.round(eff * ini.q * ini.tok  * DAYS / 1e6);
+      const tOutM = Math.round(eff * ini.q * ini.tokOut * DAYS / 1e6);
+      const gsMon = Math.round(usd*G.fx/12/1e6);
+      pillsEl.innerHTML = [
+        ['Usuarios efectivos', fmt(eff)],
+        ['Cons/día', ini.q],
+        ['Tokens IN/año', tInM+'M'],
+        ['Tokens OUT/año', tOutM+'M'],
+        ['USD/año', fmtU(usd)],
+        ['Gs/mes', gsMon+' MM'],
+      ].map(([l,v])=>`<div class="pill"><span class="pill-l">${l}</span><span class="pill-v">${v}</span></div>`).join('');
+    }
+  });
+
+  set('api-tot-usd', fmtU(totalUsd));
+  set('api-tot-gs',  gs(totalUsd)+' Gs');
+  return totalUsd;
+}
+
+// ── RENDER AUDITORÍA ──────────────────────────────────────────────────────
+function renderAudit() {
+  const a = calcAudit();
+  set('a-m1',  fmt(Math.round(a.aud)));
+  set('a-m1s', fmt(Math.round(a.aud/12))+'/mes');
+  set('a-m2',  fmt(Math.round(a.mins)));
+  set('a-m3',  G.audStt===0 ? '$0' : fmtU(a.sttUsd));
+  set('a-m4',  fmtU(a.llmUsd));
+  set('a-m5',  fmtU(a.totalUsd));
+  set('a-m5s', gs(a.totalUsd)+' Gs/año');
+  set('a-m6',  '$'+a.perCall.toFixed(4));
+
+  const sttNames={0:'Whisper open-source — sin costo de transcripción','0.006':'Whisper API — $0.006/min','0.002':'Deepgram — $0.002/min'};
+  set('a-stt-t', sttNames[G.audStt]||'STT configurado');
+  set('a-stt-s', G.audStt===0?'GPU cloud necesaria: ~$200–400 USD/mes':'Costo de transcripción incluido en total');
+
+  const llmName = document.getElementById('a-llm').options[document.getElementById('a-llm').selectedIndex]?.text.split(' ').slice(0,2).join(' ')||'';
+  const tInM  = Math.round(a.tIn/1e6);
+  const tOutM = Math.round(a.tOut/1e6);
+
+  document.getElementById('a-tbody').innerHTML = `
+    <tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:10px 12px;font-weight:500;color:var(--white)">Transcripción (STT)</td>
+      <td style="padding:10px 12px;color:var(--muted)">${fmt(Math.round(a.mins))} min/año × $${G.audStt}/min</td>
+      <td style="padding:10px 12px;text-align:right;font-family:var(--mono);color:${G.audStt===0?'var(--green)':'var(--white)'}">${G.audStt===0?'$0 — Whisper OSS':fmtU(a.sttUsd)}</td>
+      <td style="padding:10px 12px;text-align:right;font-family:var(--mono);color:${G.audStt===0?'var(--green)':'var(--cyan)'}">${G.audStt===0?'0':fmt(Math.round(a.sttUsd*G.fx/1e6))} MM</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:10px 12px;font-weight:500;color:var(--white)">Análisis IA (${llmName})</td>
+      <td style="padding:10px 12px;color:var(--muted)">${fmt(tInM)}M tok in · ${fmt(tOutM)}M tok out</td>
+      <td style="padding:10px 12px;text-align:right;font-family:var(--mono)">${fmtU(a.llmUsd)}</td>
+      <td style="padding:10px 12px;text-align:right;font-family:var(--mono);color:var(--cyan)">${fmt(Math.round(a.llmUsd*G.fx/1e6))} MM</td>
+    </tr>
+    <tr style="background:var(--bg3)">
+      <td colspan="2" style="padding:11px 12px;font-weight:600;color:var(--gold)">Total anual</td>
+      <td style="padding:11px 12px;text-align:right;font-family:var(--mono);font-weight:600;color:var(--gold)">${fmtU(a.totalUsd)}</td>
+      <td style="padding:11px 12px;text-align:right;font-family:var(--mono);font-weight:600;color:var(--gold)">${fmt(Math.round(a.totalUsd*G.fx/1e6))} MM</td>
+    </tr>`;
+}
+
+// ── RENDER EQUIPO ─────────────────────────────────────────────────────────
+function renderEquipo() {
+  const t = calcTeam();
+  const rows = [
+    { rol:'2 Desarrolladores IA', cant:2, ded:'100%', usdM:G.devSal*2, gsM:G.devSal*2*G.fx },
+    { rol:'Auxiliar',             cant:1, ded:'100%', usdM:G.auxSal,   gsM:G.auxSal*G.fx   },
+    { rol:'Project Leader',       cant:1, ded:G.plDed+'%', usdM:G.plSal*(G.plDed/100), gsM:G.plSal*(G.plDed/100)*G.fx },
+  ];
+  document.getElementById('e-tbody').innerHTML = rows.map(r=>`
+    <tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:10px 12px;font-weight:500;color:var(--white)">${r.rol}</td>
+      <td style="padding:10px 12px;text-align:right;color:var(--muted)">${r.cant}</td>
+      <td style="padding:10px 12px;text-align:right;color:var(--muted)">${r.ded}</td>
+      <td style="padding:10px 12px;text-align:right;font-family:var(--mono)">${fmtU(r.usdM)}</td>
+      <td style="padding:10px 12px;text-align:right;font-family:var(--mono);color:var(--cyan)">${fmt(Math.round(r.gsM/1e6))} MM</td>
+      <td style="padding:10px 12px;text-align:right;font-family:var(--mono);color:var(--gold)">${fmt(Math.round(r.gsM*12/1e6))} MM</td>
+    </tr>`).join('');
+  set('e-tot-usd',  fmtU(t.mon));
+  set('e-tot-gs-m', fmt(Math.round(t.monGs/1e6))+' MM Gs');
+  set('e-tot-gs-y', fmt(Math.round(t.yrGs/1e6))+' MM Gs');
+  set('e-m1', fmtU(t.mon));
+  set('e-m2', fmt(Math.round(t.monGs/1e6))+' MM');
+  set('e-m3', fmt(Math.round(t.yrGs/1e6))+' MM');
+  set('e-m4', fmtU(t.yr));
+}
+
+// ── RENDER ROI ────────────────────────────────────────────────────────────
+function renderRoi() {
+  const { sales, contrib, rule } = calcRoi();
+  set('r-sales',  fmt(Math.round(sales)));
+  set('r-contrib',fmt(Math.round(contrib)));
+  set('r-rule',   fmt(Math.round(rule)));
+
+  const REF = { low:3516, mid:4707, high:5449 };
+  const SC = [
+    { id:'neg',   name:'Asistente Negociación',  low:[1,'ventas'], mid:[2,'ventas'], high:[3,'ventas'] },
+    { id:'train', name:'Entrenador Ventas IA',   low:[1,'product'],mid:[2,'product'],high:[5,'product'] },
+    { id:'ref',   name:'Referencias IA Agéntica',fixed:REF },
+    { id:'suc',   name:'Asistente Sucursales',   operativo:true },
+  ];
+
+  const calv = (sc,scen) => {
+    if (sc.fixed) return sc.fixed[scen];
+    if (sc.operativo) return null;
+    return Math.round(rule * sc[scen][0]);
+  };
+
+  const totals = { low:0, mid:0, high:0 };
+  document.getElementById('r-tbody').innerHTML = SC.map(sc=>{
+    const l=calv(sc,'low'), m=calv(sc,'mid'), h=calv(sc,'high');
+    if(l) totals.low+=l; if(m) totals.mid+=m; if(h) totals.high+=h;
+    const v=(val,scen)=>val===null
+      ? `<span style="color:var(--muted)">— operativo</span>`
+      : `<span style="color:${scen==='low'?'#60A5FA':scen==='mid'?'var(--cyan)':'var(--green)'}">${fmt(val)} MM</span>`;
+    const sl=(sc,s)=>sc.fixed?'ahorro + conv.':sc.operativo?'—':`+${sc[s][0]}% ${sc[s][1]}`;
+    return `<tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:10px 12px;font-weight:500;color:var(--white)">${sc.name}</td>
+      <td style="padding:10px 12px;text-align:right;font-size:11px;color:var(--muted)">${sl(sc,'low')}</td>
+      <td style="padding:10px 12px;text-align:right">${v(l,'low')}</td>
+      <td style="padding:10px 12px;text-align:right;font-size:11px;color:var(--muted)">${sl(sc,'mid')}</td>
+      <td style="padding:10px 12px;text-align:right">${v(m,'mid')}</td>
+      <td style="padding:10px 12px;text-align:right;font-size:11px;color:var(--muted)">${sl(sc,'high')}</td>
+      <td style="padding:10px 12px;text-align:right">${v(h,'high')}</td>
+    </tr>`;
+  }).join('');
+
+  set('r-tl', fmt(totals.low)+' MM');
+  set('r-tm', fmt(totals.mid)+' MM');
+  set('r-th', fmt(totals.high)+' MM');
+
+  const costMM = calcTotalCostGs();
+  Object.entries({low:[totals.low,'l'],mid:[totals.mid,'m'],high:[totals.high,'h']}).forEach(([,[ ben,k]])=>{
+    const net=ben-costMM;
+    set(`n-b${k}`, fmt(ben)+' MM'); set(`n-c${k}`, fmt(costMM)+' MM');
+    set(`n-r${k}`, '+'+fmt(net)+' MM');
+    set(`n-p${k}`, (costMM/ben*100).toFixed(1)+'%');
+    set(`n-m${k}`, (ben/costMM).toFixed(1)+'×');
+  });
+}
+
+// ── RENDER SUMMARY ────────────────────────────────────────────────────────
+function renderSummary() {
+  const t    = calcTeam();
+  const apiUsd = INI.reduce((s,i)=>s+calcIni(i),0);
+  const apiGs  = apiUsd*G.fx;
+  const gpu    = 30e6, infra=30e6;
+  const totalGs= t.yrGs+apiGs+gpu+infra;
+  const totalUsd= totalGs/G.fx;
+  const costMM  = Math.round(totalGs/1e6);
+
+  const { rule } = calcRoi();
+  const REF = {low:3516,mid:4707,high:5449};
+  const bens = {
+    low:  Math.round(rule*1+rule*1+REF.low),
+    mid:  Math.round(rule*2+rule*2+REF.mid),
+    high: Math.round(rule*3+rule*5+REF.high),
+  };
+  const ben = bens[G.scenario];
+  const roi = ben - costMM;
+
+  set('s-ben',  fmt(ben));
+  set('s-cost', fmt(costMM));
+  set('s-roi',  fmt(roi));
+  set('s-pct',  (costMM/ben*100).toFixed(1)+'%');
+  set('s-mult', (ben/costMM).toFixed(1)+'×');
+
+  set('s-dev',     fmt(Math.round(G.devSal*2*G.fx/1e6))+' MM/mes');
+  set('s-aux',     fmt(Math.round(G.auxSal*G.fx/1e6))+' MM/mes');
+  set('s-pl',      fmt(Math.round(G.plSal*(G.plDed/100)*G.fx/1e6))+' MM/mes');
+  set('s-team-yr', fmt(Math.round(t.yrGs/1e6))+' MM Gs');
+  set('s-gpu',     '~30 MM Gs/año');
+  set('s-api-gs',  fmt(Math.round(apiGs/1e6))+' MM Gs/año');
+  set('s-ext-yr',  fmt(Math.round((apiGs+gpu+infra)/1e6))+' MM Gs');
+  set('s-usd-t',   fmtU(totalUsd));
+  set('s-gs-t',    fmt(costMM)+' MM');
+  set('s-roi-t',   '+'+fmt(roi)+' MM');
+}
+
+// ── MAIN UPDATE ───────────────────────────────────────────────────────────
+function ua() {
+  syncSliders();
+  renderInitCosts();
+  renderAudit();
+  renderEquipo();
   renderRoi();
   renderSummary();
 }
 
-// ── RENDER TEAM ────────────────────────────────────────────────────────────
-function renderTeam() {
-  const t = calcTeam();
-  const rows = [
-    { rol:'2 Desarrolladores IA', cant:2, ded:'100%', usdM:S.devSal*2, gsM:S.devSal*2*S.fx },
-    { rol:'Auxiliar',             cant:1, ded:'100%', usdM:S.auxSal,   gsM:S.auxSal*S.fx   },
-    { rol:'Project Leader',       cant:1, ded:S.plDed+'%', usdM:S.plSal*(S.plDed/100), gsM:S.plSal*(S.plDed/100)*S.fx },
-  ];
-  document.getElementById('team-table-body').innerHTML = rows.map(r=>`
-    <tr style="border-bottom:1px solid var(--border)">
-      <td style="padding:10px 12px;font-weight:500;color:var(--white)">${r.rol}</td>
-      <td style="padding:10px 12px;text-align:center;color:var(--muted)">${r.cant}</td>
-      <td style="padding:10px 12px;text-align:center;color:var(--muted)">${r.ded}</td>
-      <td style="padding:10px 12px;text-align:right;font-family:var(--mono)">${fmtUsd(r.usdM)}</td>
-      <td style="padding:10px 12px;text-align:right;font-family:var(--mono);color:var(--cyan)">${fmt(Math.round(r.gsM/1e6))} MM</td>
-      <td style="padding:10px 12px;text-align:right;font-family:var(--mono);color:var(--gold)">${fmt(Math.round(r.gsM*12/1e6))} MM</td>
-    </tr>`).join('');
-  document.getElementById('team-tot-usd').textContent    = fmtUsd(t.monthUsd);
-  document.getElementById('team-tot-gs-mon').textContent = fmt(Math.round(t.monthGs/1e6))+' MM Gs';
-  document.getElementById('team-tot-gs-yr').textContent  = fmt(Math.round(t.yearGs/1e6))+' MM Gs';
-  document.getElementById('eq-month').textContent    = fmtUsd(t.monthUsd);
-  document.getElementById('eq-month-gs').textContent = fmt(Math.round(t.monthGs/1e6))+' MM';
-  document.getElementById('eq-year-gs').textContent  = fmt(Math.round(t.yearGs/1e6))+' MM';
-  document.getElementById('eq-year-usd').textContent = fmtUsd(t.yearUsd);
-}
-
-// ── RENDER APIs ────────────────────────────────────────────────────────────
-function renderApis() {
-  const costs = INITIATIVES.map(ini=>({ ...ini, usd: calcApiCost(ini) }));
-  const maxUsd = Math.max(...costs.map(c=>c.usd), 1);
-  const totalUsd = costs.reduce((s,c)=>s+c.usd, 0);
-
-  document.getElementById('api-list').innerHTML = costs.map(c=>`
-    <div class="init-row">
-      <div class="init-name">
-        <span class="ola-badge ${c.ola===1?'ola1':'ola2'}">OLA ${c.ola}</span>
-        <div>
-          ${c.name}
-          <span class="init-note">${c.note}</span>
-        </div>
-      </div>
-      <div></div>
-      <div class="init-usd">${fmtUsd(c.usd)}</div>
-      <div class="init-gs">${fmt(Math.round(c.usd*S.fx/1e6))} MM</div>
-    </div>
-    <div style="padding:0 14px 8px">
-      <div class="bar-wrap"><div class="bar-fill" style="width:${Math.round(c.usd/maxUsd*100)}%;background:${c.ola===1?'var(--red)':'var(--blue)'}"></div></div>
-    </div>`).join('');
-
-  document.getElementById('api-tot-usd').textContent = fmtUsd(totalUsd);
-  document.getElementById('api-tot-gs').textContent  = fmt(Math.round(totalUsd*S.fx/1e6))+' MM';
-}
-
-// ── RENDER AUDITORÍA ───────────────────────────────────────────────────────
-function renderAuditoria() {
-  const a = calcAuditCost();
-  document.getElementById('aud-calls').textContent    = fmt(Math.round(a.auditedYear));
-  document.getElementById('aud-calls-sub').textContent= fmt(Math.round(a.auditedYear/12))+' / mes';
-  document.getElementById('aud-mins').textContent     = fmt(Math.round(a.minsYear));
-  document.getElementById('aud-stt-cost').textContent = S.audStt===0 ? '$0' : fmtUsd(a.sttUsd);
-  document.getElementById('aud-llm-cost').textContent = fmtUsd(a.llmUsd);
-  document.getElementById('aud-total-usd').textContent= fmtUsd(a.totalUsd);
-  document.getElementById('aud-total-gs').textContent = fmt(Math.round(a.totalUsd*S.fx/1e6))+' MM Gs/año';
-  document.getElementById('aud-per-call').textContent = '$'+a.perCall.toFixed(4);
-
-  const sttLabel = S.audStt===0 ? 'Whisper open-source — sin costo de transcripción' :
-                   S.audStt===0.006 ? 'Whisper API — $0.006/min' : 'Deepgram — $0.002/min';
-  document.getElementById('stt-status-text').textContent = sttLabel;
-
-  const auditedYear = Math.round(a.auditedYear);
-  document.getElementById('aud-tbody').innerHTML = `
-    <tr style="border-bottom:1px solid var(--border)">
-      <td style="padding:10px 12px;font-weight:500;color:var(--white)">Transcripción (STT)</td>
-      <td style="padding:10px 12px;color:var(--muted)">${fmt(Math.round(a.minsYear))} min/año × $${S.audStt}/min</td>
-      <td style="padding:10px 12px;text-align:right;font-family:var(--mono);color:${S.audStt===0?'var(--green)':'var(--white)'}">${S.audStt===0?'$0 — Whisper OSS':fmtUsd(a.sttUsd)}</td>
-      <td style="padding:10px 12px;text-align:right;font-family:var(--mono);color:${S.audStt===0?'var(--green)':'var(--cyan)'}">${S.audStt===0?'0':fmt(Math.round(a.sttUsd*S.fx/1e6))} MM</td>
-    </tr>
-    <tr style="border-bottom:1px solid var(--border)">
-      <td style="padding:10px 12px;font-weight:500;color:var(--white)">Análisis IA (${document.getElementById('aud-llm').options[document.getElementById('aud-llm').selectedIndex].text.split(' ')[0]+' '+document.getElementById('aud-llm').options[document.getElementById('aud-llm').selectedIndex].text.split(' ')[1]})</td>
-      <td style="padding:10px 12px;color:var(--muted)">${fmt(Math.round(auditedYear*(S.dur*150+500)/1e6))}M tok in · ${fmt(Math.round(auditedYear*400/1e6))}M tok out</td>
-      <td style="padding:10px 12px;text-align:right;font-family:var(--mono)">${fmtUsd(a.llmUsd)}</td>
-      <td style="padding:10px 12px;text-align:right;font-family:var(--mono);color:var(--cyan)">${fmt(Math.round(a.llmUsd*S.fx/1e6))} MM</td>
-    </tr>
-    <tr style="background:var(--bg3)">
-      <td style="padding:12px;font-weight:600;color:var(--gold)" colspan="2">Total anual</td>
-      <td style="padding:12px;text-align:right;font-family:var(--mono);font-weight:600;color:var(--gold)">${fmtUsd(a.totalUsd)}</td>
-      <td style="padding:12px;text-align:right;font-family:var(--mono);font-weight:600;color:var(--gold)">${fmt(Math.round(a.totalUsd*S.fx/1e6))} MM</td>
-    </tr>`;
-}
-
-// ── RENDER ROI ─────────────────────────────────────────────────────────────
-function renderRoi() {
-  const { sales, contrib, rule } = calcRoiRule();
-  document.getElementById('roi-sales').textContent  = fmt(Math.round(sales));
-  document.getElementById('roi-contrib').textContent= fmt(Math.round(contrib));
-  document.getElementById('roi-rule').textContent   = fmt(Math.round(rule));
-
-  const refFixed = { low:3516, mid:4707, high:5449 };
-
-  const tbody = ROI_SCENARIOS.map(sc=>{
-    const calcVal = (scen) => {
-      if (sc.fixed) return sc.fixed[scen];
-      const pair = sc[scen];
-      if (!pair) return null;
-      return Math.round(rule * pair[0] * (pair[1]==='ventas'?1:1));
-    };
-    const low  = calcVal('low');
-    const mid  = calcVal('mid');
-    const high = calcVal('high');
-    const fmt2 = (v,scen) => v===null ? `<span style="color:var(--muted)">—</span>` :
-      `<span style="color:${scen==='low'?'#60A5FA':scen==='mid'?'var(--cyan)':'var(--green)'}">${fmt(v)} MM</span>`;
-    return `<tr style="border-bottom:1px solid var(--border)">
-      <td style="padding:10px 12px;font-weight:500;color:var(--white)">${sc.name}${sc.note?'<br><span style="font-size:11px;color:var(--muted)">'+sc.note+'</span>':''}</td>
-      <td style="padding:10px 12px;text-align:right;color:var(--muted);font-size:12px">${sc.low?'+'+sc.low[0]+'% '+sc.low[1]:(sc.fixed?'ahorro fijo':'—')}</td>
-      <td style="padding:10px 12px;text-align:right">${fmt2(low,'low')}</td>
-      <td style="padding:10px 12px;text-align:right;color:var(--muted);font-size:12px">${sc.mid?'+'+sc.mid[0]+'% '+sc.mid[1]:(sc.fixed?'ahorro+conv.':'—')}</td>
-      <td style="padding:10px 12px;text-align:right">${fmt2(mid,'mid')}</td>
-      <td style="padding:10px 12px;text-align:right;color:var(--muted);font-size:12px">${sc.high?'+'+sc.high[0]+'% '+sc.high[1]:(sc.fixed?'ahorro+conv.':'—')}</td>
-      <td style="padding:10px 12px;text-align:right">${fmt2(high,'high')}</td>
-    </tr>`;
-  }).join('');
-  document.getElementById('roi-tbody').innerHTML = tbody;
-
-  const totLow  = Math.round(rule*1 + rule*1 + refFixed.low);
-  const totMid  = Math.round(rule*2 + rule*2 + refFixed.mid);
-  const totHigh = Math.round(rule*3 + rule*5 + refFixed.high);
-  document.getElementById('roi-tot-low').textContent  = fmt(totLow)+' MM';
-  document.getElementById('roi-tot-mid').textContent  = fmt(totMid)+' MM';
-  document.getElementById('roi-tot-high').textContent = fmt(totHigh)+' MM';
-
-  // Net ROI table
-  const totalCostMM = calcTotalCostMM();
-  [[totLow,'low'],[totMid,'mid'],[totHigh,'high']].forEach(([ben,scen])=>{
-    const net = ben - totalCostMM;
-    const pct = (totalCostMM/ben*100).toFixed(1);
-    const mult= (ben/totalCostMM).toFixed(1);
-    document.getElementById(`net-ben-${scen}`).textContent  = fmt(ben)+' MM';
-    document.getElementById(`net-roi-${scen}`).textContent  = '+'+fmt(net)+' MM';
-    document.getElementById(`net-pct-${scen}`).textContent  = pct+'%';
-    document.getElementById(`net-mult-${scen}`).textContent = mult+'×';
-  });
-  document.getElementById('net-cost').textContent  = fmt(totalCostMM)+' MM';
-  document.getElementById('net-cost2').textContent = fmt(totalCostMM)+' MM';
-  document.getElementById('net-cost3').textContent = fmt(totalCostMM)+' MM';
-}
-
-function calcTotalCostMM() {
-  const team   = calcTeam().yearGs / 1e6;
-  const gpuMM  = 30;
-  const apiUsd = INITIATIVES.reduce((s,ini)=>s+calcApiCost(ini), 0);
-  const apiMM  = apiUsd * S.fx / 1e6;
-  const infraMM= 30;
-  return Math.round(team + gpuMM + apiMM + infraMM);
-}
-
-// ── RENDER SUMMARY ─────────────────────────────────────────────────────────
-function renderSummary() {
-  const team   = calcTeam().yearGs;
-  const gpuMM  = 30e6;
-  const apiUsd = INITIATIVES.reduce((s,ini)=>s+calcApiCost(ini), 0);
-  const apiGs  = apiUsd * S.fx;
-  const infraGs= 30e6;
-  const totalGs= team + gpuMM + apiGs + infraGs;
-  const totalUsd= totalGs / S.fx;
-  const { rule } = calcRoiRule();
-  const refFixed = {low:3516,mid:4707,high:5449};
-  const benefit = { low:rule*1+rule*1+refFixed.low, mid:rule*2+rule*2+refFixed.mid, high:rule*3+rule*5+refFixed.high };
-  const sel = S.scenario;
-  const ben = benefit[sel];
-  const cost= totalGs/1e6;
-  const roi = ben - cost;
-
-  document.getElementById('res-benefit').textContent = fmt(Math.round(ben));
-  document.getElementById('res-cost').textContent    = fmt(Math.round(cost));
-  document.getElementById('res-roi').textContent     = fmt(Math.round(roi));
-  document.getElementById('res-pct').textContent     = (cost/ben*100).toFixed(1)+'%';
-  document.getElementById('res-mult').textContent    = (ben/cost).toFixed(1)+'×';
-
-  document.getElementById('sum-team').textContent  = fmt(Math.round(team/1e6))+' MM Gs';
-  document.getElementById('sum-gpu').textContent   = fmt(Math.round(gpuMM/1e6))+' MM Gs/año';
-  document.getElementById('sum-api').textContent   = fmt(Math.round(apiGs/1e6))+' MM Gs/año';
-  document.getElementById('sum-infra').textContent = fmt(Math.round(infraGs/1e6))+' MM Gs/año';
-  document.getElementById('sum-ext').textContent   = fmt(Math.round((gpuMM+apiGs+infraGs)/1e6))+' MM Gs';
-  document.getElementById('sum-usd-total').textContent = fmtUsd(totalUsd);
-  document.getElementById('sum-gs-total').textContent  = fmt(Math.round(totalGs/1e6))+' MM';
-  document.getElementById('sum-roi-total').textContent = '+'+fmt(Math.round(roi))+' MM';
-}
-
-// ── TABS & SCENARIO ────────────────────────────────────────────────────────
 function showTab(name) {
-  document.querySelectorAll('.tab').forEach((t,i)=>{
-    const names=['resumen','equipo','apis','auditoria','roi'];
-    t.classList.toggle('active', names[i]===name);
-  });
-  document.querySelectorAll('.page').forEach(p=>{
-    p.classList.toggle('active', p.id===`page-${name}`);
-  });
+  const names=['resumen','iniciativas','auditoria','equipo','roi'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===`page-${name}`));
 }
 
-function setScenario(scen, btn) {
-  S.scenario = scen;
-  document.querySelectorAll('.scen-btn').forEach(b=>b.classList.remove('active'));
+function setSc(sc, btn) {
+  G.scenario=sc;
+  document.querySelectorAll('.sb').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  updateAll();
+  ua();
 }
 
-// Init
-updateAll();
+// Sync all three fx sliders
+['g-fx','g-fx2','g-fx3'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('input',function(){
+    ['g-fx','g-fx2','g-fx3'].forEach(oid=>{
+      if(oid!==id) document.getElementById(oid).value=this.value;
+    });
+    ua();
+  });
+});
+
+// Build and init
+buildInitList();
+ua();
 </script>
 </body>
 </html>
